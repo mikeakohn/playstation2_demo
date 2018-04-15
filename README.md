@@ -91,14 +91,12 @@ When setting the position of an object on the screen, something to
 keep in mind is that the display area is:
 
 ```
-(1728, 1936) to (2368, 2384)
+(1000.0, 1000.0) to (1640.0, 1480.0)
 ```
 
-Yeah, they are awkward numbers.  I got these from someone else's
-Playstation 2 demo when I was learning about the system and never
-changed it.  Not sure why they used these numbers.. I could probably
-switch it to (1000, 1000) to (1640, 1448) .. maybe I'll do that
-actually.
+Yeah, they are awkward numbers... the Playstation 2 display area is
+defined as the X and Y being able to be from 0.0 to 4096.0.  I set
+the offset to be 1000.0, 1000.0 in the initialization code.
 
 Coding Style
 ------------
