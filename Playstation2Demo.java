@@ -4,6 +4,7 @@ public class Playstation2Demo
 {
   static public void main(String args[])
   {
+    JavaGrinderScreen.run();
 
     Playstation2.showContext(0);
 
