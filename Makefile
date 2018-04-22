@@ -17,5 +17,6 @@ debug:
 
 clean:
 	@rm -f *.elf *.o *.lst *.class playstation2_demo.asm
+	@cd tools && make clean
 	@echo "Clean!"
 
