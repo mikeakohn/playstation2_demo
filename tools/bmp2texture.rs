@@ -90,7 +90,7 @@ fn main()
 
   if bits_per_pixel == &16
   {
-    println!("  static short[] vu0_prog =");
+    println!("  static short[] texture =");
     println!("  {{");
 
     while (n as usize) < image_size 
@@ -118,7 +118,7 @@ fn main()
   }
   else
   {
-    println!("  static int[] vu0_prog =");
+    println!("  static int[] texture =");
     println!("  {{");
 
     while (n as usize) < image_size 
