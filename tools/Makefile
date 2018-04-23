@@ -1,9 +1,9 @@
 
 default:
-	rustc bmp2texture_array.rs
-	rustc bmp2texture_file.rs
+	rustc bmp2texture.rs
+	rustc bin2array.rs
 
 clean:
-	@rm -f bmp2texture_array bmp2texture_file
+	@rm -f bmp2texture bin2array
 	@echo "Clean!"
 

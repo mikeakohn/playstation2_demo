@@ -22,19 +22,46 @@ fn main()
 
   if args.len() != 3
   {
-    println!("Usage: bmp2texture <filename> <16/24>");
+    println!("Usage: bmp2texture <filename> <16/RLE16/24>");
     process::exit(0);
   }
 
-  let filename = &args[1];
-  let bits_per_pixel = &args[2].parse::<i32>().unwrap();
+  let filename_bmp = &args[1];
+  let mut filename_texture = (&filename_bmp[..filename_bmp.len() - 4]).to_string();
+  //let bits_per_pixel = &args[2].parse::<i32>().unwrap();
+  let mut bits_per_pixel = 0;
+  let mut compression = 0;
 
-  println!("      filename: {}", filename);
-  println!("bits_per_pixel: {}", bits_per_pixel);
+  if args[2] == "8"
+  {
+    bits_per_pixel = 8;
+  }
+  else if args[2] == "16"
+  {
+    bits_per_pixel = 16;
+  }
+  else if args[2] == "RLE16"
+  {
+    bits_per_pixel = 16;
+    compression = 1;
+  }
+  else
+  {
+    println!("Unknown image encoding {}", args[2]);
+  }
 
-  let mut file = File::open(filename).expect("File not found");
+  filename_texture.push_str(".t");
+  filename_texture.push_str(&bits_per_pixel.to_string());
+
+  println!("    bmp filename: {}", filename_bmp);
+  println!("texture filename: {}", filename_texture);
+  println!("  bits_per_pixel: {}", bits_per_pixel);
+  println!("     compression: {}", bits_per_pixel);
+
+  let mut file_in = File::open(filename_bmp).expect("File not found");
   let mut buf = [0u8; 128 * 1024];
-  let bytes_read = file.read(&mut buf).unwrap();
+  let bytes_read = file_in.read(&mut buf).unwrap();
+  let mut file_out = File::create(filename_texture).unwrap();
 
   let width = get_int32(&buf, 18);
   let height = get_int32(&buf, 22);
@@ -88,59 +115,82 @@ fn main()
 
   let mut n = 0;
 
-  if bits_per_pixel == &16
+  if compression == 1 
   {
-    println!("  static short[] texture =");
-    println!("  {{");
+    let mut data = [0u8; 2];
+    let mut count = 0;
+    let mut last = -1 as i32;
 
     while (n as usize) < image_size 
     {
-      let mut out = String::from("   ");
+      let r = (buf[image_offset + n + 0] as u32) >> 3;
+      let g = (buf[image_offset + n + 1] as u32) >> 3;
+      let b = (buf[image_offset + n + 2] as u32) >> 3;
 
-      for _ in 0..8
+      let pixel = (r | (g << 5) | (b << 10)) as i32;
+
+      if pixel != last || count == 255
       {
-        let r = (buf[image_offset + n + 0] as u32) >> 3;
-        let g = (buf[image_offset + n + 1] as u32) >> 3;
-        let b = (buf[image_offset + n + 2] as u32) >> 3;
+        if count != 0
+        {
+          data[0] = (last & 0xff) as u8;
+          data[1] = (last >> 8) as u8;
 
-        let pixel = r | (g << 5) | (b << 10);
-        let mut next = format!(" 0x{:04x},", pixel as u32);
+          file_out.write(&data).unwrap();
+        }
 
-        out.push_str(&mut next);
-
-        n = n + 3;
+        count = 0;
+        last = pixel;
       }
 
-      println!("{}", out);
+      count += 1;
+
+      n = n + 3;
     }
 
-    println!("  }};");
+    if count != 0
+    {
+      data[0] = (last & 0xff) as u8;
+      data[1] = (last >> 8) as u8;
+
+      file_out.write(&data).unwrap();
+    }
+  }
+  else if bits_per_pixel == 16
+  {
+    let mut data = [0u8; 2];
+
+    while (n as usize) < image_size 
+    {
+      let r = (buf[image_offset + n + 0] as u32) >> 3;
+      let g = (buf[image_offset + n + 1] as u32) >> 3;
+      let b = (buf[image_offset + n + 2] as u32) >> 3;
+
+      let pixel = (r | (g << 5) | (b << 10)) as i32;
+
+      data[0] = (pixel & 0xff) as u8;
+      data[1] = (pixel >> 8) as u8;
+
+      file_out.write(&data).unwrap();
+
+      n = n + 3;
+    }
   }
   else
   {
-    println!("  static int[] texture =");
-    println!("  {{");
+    let mut data = [0u8; 4];
 
     while (n as usize) < image_size 
     {
-      let mut out = String::from("   ");
+      data[0] = buf[image_offset + n + 0];
+      data[1] = buf[image_offset + n + 1];
+      data[2] = buf[image_offset + n + 2];
+      data[3] = 0;
 
-      for _ in 0..6
-      {
-        let pixel = (buf[image_offset + n + 0] as u32) |
-                    ((buf[image_offset + n + 1] as u32) << 8) |
-                    ((buf[image_offset + n + 2] as u32) << 16);
-        let mut next = format!(" 0x{:08x},", pixel as u32);
+      file_out.write(&data).unwrap();
 
-        out.push_str(&mut next);
-
-        n = n + 3;
-      }
-
-      println!("{}", out);
+      n = n + 3;
     }
-
-    println!("  }};");
   }
 }
 

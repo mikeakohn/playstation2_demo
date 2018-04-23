@@ -2,3 +2,5 @@
 *.asm
 *.lst
 *.elf
+bin2array
+bmp2texture
