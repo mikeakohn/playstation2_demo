@@ -20,8 +20,11 @@ fn main()
   while i < bytes_read
   {
     let mut out = String::from("    ");
+    let mut count = bytes_read - i;
 
-    for n in 0..8
+    if count > 8 { count = 8; }
+
+    for n in 0..count
     {
       let mut next = format!(" {:4.0},", buf[i + n] as i8);
       out.push_str(&mut next);

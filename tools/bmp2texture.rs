@@ -22,7 +22,7 @@ fn main()
 
   if args.len() != 3
   {
-    println!("Usage: bmp2texture <filename> <16/RLE16/24>");
+    println!("Usage: bmp2texture <filename> <16/rle16/24>");
     process::exit(0);
   }
 
@@ -35,28 +35,30 @@ fn main()
   if args[2] == "8"
   {
     bits_per_pixel = 8;
+    filename_texture.push_str(".t8");
   }
   else if args[2] == "16"
   {
     bits_per_pixel = 16;
+    filename_texture.push_str(".t16");
   }
-  else if args[2] == "RLE16"
+  else if args[2] == "rle16"
   {
     bits_per_pixel = 16;
     compression = 1;
+    filename_texture.push_str(".trle16");
   }
   else
   {
     println!("Unknown image encoding {}", args[2]);
   }
 
-  filename_texture.push_str(".t");
-  filename_texture.push_str(&bits_per_pixel.to_string());
+  //filename_texture.push_str(&bits_per_pixel.to_string());
 
   println!("    bmp filename: {}", filename_bmp);
   println!("texture filename: {}", filename_texture);
   println!("  bits_per_pixel: {}", bits_per_pixel);
-  println!("     compression: {}", bits_per_pixel);
+  println!("     compression: {}", compression);
 
   let mut file_in = File::open(filename_bmp).expect("File not found");
   let mut buf = [0u8; 128 * 1024];
@@ -91,19 +93,19 @@ fn main()
 
   if (width % 64) != 0
   {
-    println!("Width of image must be a multiple of 64\n");
+    println!("Width of image must be a multiple of 64");
     process::exit(1);
   }
 
   if width.leading_zeros() + width.trailing_zeros() != 31
   {
-    println!("Width of image must be either 64, 128, 256, 512 pixels.\n");
+    println!("Width of image must be either 64, 128, 256, 512 pixels.");
     process::exit(1);
   }
 
   if height.leading_zeros() + height.trailing_zeros() != 31
   {
-    println!("Height of image must be either 2, 4, 8, 16, 32 64, 128, 256, 512 pixels.\n");
+    println!("Height of image must be either 2, 4, 8, 16, 32 64, 128, 256, 512 pixels.");
     process::exit(1);
   }
 
@@ -117,7 +119,7 @@ fn main()
 
   if compression == 1 
   {
-    let mut data = [0u8; 2];
+    let mut data = [0u8; 3];
     let mut count = 0;
     let mut last = -1 as i32;
 
@@ -133,8 +135,9 @@ fn main()
       {
         if count != 0
         {
-          data[0] = (last & 0xff) as u8;
-          data[1] = (last >> 8) as u8;
+          data[0] = count as u8;
+          data[1] = (last & 0xff) as u8;
+          data[2] = (last >> 8) as u8;
 
           file_out.write(&data).unwrap();
         }
@@ -150,8 +153,9 @@ fn main()
 
     if count != 0
     {
-      data[0] = (last & 0xff) as u8;
-      data[1] = (last >> 8) as u8;
+      data[0] = count as u8;
+      data[1] = (last & 0xff) as u8;
+      data[2] = (last >> 8) as u8;
 
       file_out.write(&data).unwrap();
     }
