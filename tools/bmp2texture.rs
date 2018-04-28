@@ -29,7 +29,7 @@ fn main()
   let filename_bmp = &args[1];
   let mut filename_texture = (&filename_bmp[..filename_bmp.len() - 4]).to_string();
   //let bits_per_pixel = &args[2].parse::<i32>().unwrap();
-  let mut bits_per_pixel = 0;
+  let bits_per_pixel;
   let mut compression = 0;
 
   if args[2] == "8"
@@ -51,6 +51,7 @@ fn main()
   else
   {
     println!("Unknown image encoding {}", args[2]);
+    process::exit(1);
   }
 
   //filename_texture.push_str(&bits_per_pixel.to_string());
