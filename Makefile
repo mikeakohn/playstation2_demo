@@ -13,7 +13,7 @@ default: $(CLASSES)
 	javac -classpath ../java_grinder/build/JavaGrinder.jar:. $*.java
 
 debug:
-	$(NAKEN_ASM) -I $(INCLUDE_PATH) -l -e -o playstation2_demo.elf playstation2_demo.asm
+	$(NAKEN_ASM) -I $(INCLUDE_PATH) -l -e -dump_symbols -o playstation2_demo.elf playstation2_demo.asm
 
 clean:
 	@rm -f *.elf *.o *.lst *.class playstation2_demo.asm
