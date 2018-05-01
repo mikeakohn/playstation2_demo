@@ -115,9 +115,9 @@ if compression == 1:
   last = -1
 
   while n < image_size:
-    r = ord(data[image_offset + n + 0]) >> 3
+    r = ord(data[image_offset + n + 2]) >> 3
     g = ord(data[image_offset + n + 1]) >> 3
-    b = ord(data[image_offset + n + 2]) >> 3
+    b = ord(data[image_offset + n + 0]) >> 3
 
     pixel = (r | (g << 5) | (b << 10))
 
@@ -142,9 +142,9 @@ if compression == 1:
 elif bits_per_pixel == 16:
 
   while n < image_size:
-    r = ord(data[image_offset + n + 0]) >> 3
+    r = ord(data[image_offset + n + 2]) >> 3
     g = ord(data[image_offset + n + 1]) >> 3
-    b = ord(data[image_offset + n + 2]) >> 3
+    b = ord(data[image_offset + n + 0]) >> 3
 
     pixel = (r | (g << 5) | (b << 10))
 
@@ -156,9 +156,9 @@ elif bits_per_pixel == 16:
 else:
 
   while n < image_size:
-    out.write(data[image_offset + n + 0])
-    out.write(data[image_offset + n + 1])
     out.write(data[image_offset + n + 2])
+    out.write(data[image_offset + n + 1])
+    out.write(data[image_offset + n + 0])
     out.write(chr(0))
 
     n = n + 3

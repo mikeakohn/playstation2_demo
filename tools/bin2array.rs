@@ -9,7 +9,7 @@ fn main()
 
   let mut file = File::open(filename).expect("File not found");
 
-  let mut buf = [0u8; 4096];
+  let mut buf = [0u8; 65536];
   let bytes_read = file.read(&mut buf).unwrap();
 
   println!("  static byte[] array =");

@@ -126,9 +126,9 @@ fn main()
 
     while (n as usize) < image_size 
     {
-      let r = (buf[image_offset + n + 0] as u32) >> 3;
+      let r = (buf[image_offset + n + 2] as u32) >> 3;
       let g = (buf[image_offset + n + 1] as u32) >> 3;
-      let b = (buf[image_offset + n + 2] as u32) >> 3;
+      let b = (buf[image_offset + n + 0] as u32) >> 3;
 
       let pixel = (r | (g << 5) | (b << 10)) as i32;
 
@@ -167,9 +167,9 @@ fn main()
 
     while (n as usize) < image_size 
     {
-      let r = (buf[image_offset + n + 0] as u32) >> 3;
+      let r = (buf[image_offset + n + 2] as u32) >> 3;
       let g = (buf[image_offset + n + 1] as u32) >> 3;
-      let b = (buf[image_offset + n + 2] as u32) >> 3;
+      let b = (buf[image_offset + n + 0] as u32) >> 3;
 
       let pixel = (r | (g << 5) | (b << 10)) as i32;
 
@@ -187,9 +187,9 @@ fn main()
 
     while (n as usize) < image_size 
     {
-      data[0] = buf[image_offset + n + 0];
+      data[0] = buf[image_offset + n + 2];
       data[1] = buf[image_offset + n + 1];
-      data[2] = buf[image_offset + n + 2];
+      data[2] = buf[image_offset + n + 0];
       data[3] = 0;
 
       file_out.write(&data).unwrap();

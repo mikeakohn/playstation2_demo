@@ -2,7 +2,6 @@ import net.mikekohn.java_grinder.Playstation2;
 import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFan;
 import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFanWithTexture;
 import net.mikekohn.java_grinder.Draw3D.Draw3DTexture16;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTexture24;
 
 public class JavaGrinderScreen
 {
@@ -32,10 +31,10 @@ public class JavaGrinderScreen
 
   static float[] texture_coords =
   {
-    0.0f, 0.0f,
     0.0f, 1.0f,
     1.0f, 1.0f,
     1.0f, 0.0f,
+    0.0f, 0.0f,
   };
 
   static void run()
@@ -43,9 +42,7 @@ public class JavaGrinderScreen
     Draw3DTriangleFan white_square = new Draw3DTriangleFan(4);
     Draw3DTriangleFan red_square = new Draw3DTriangleFan(4);
     Draw3DTriangleFanWithTexture java_logo = new Draw3DTriangleFanWithTexture(4);
-    //Draw3DTriangleFan java_logo = new Draw3DTriangleFan(4);
     Draw3DTexture16 java_logo_texture = new Draw3DTexture16(64, 64);
-    //Draw3DTexture24 java_logo_texture = new Draw3DTexture24(64, 64);
     int white_rotate = 0;
     int red_rotate = 0;
     float white_z = 2048.0f;
@@ -65,8 +62,7 @@ public class JavaGrinderScreen
     red_square.setPoints(red_points);
     red_square.setPosition(1320.f, 1370.0f, 2048.0f);
 
-    //java_logo_texture.setPixelsRLE16(0, JavaLogo.image);
-
+/*
     for (i = 0; i < 64 * 64; i++)
     {
       if (i < 64)
@@ -82,8 +78,9 @@ public class JavaGrinderScreen
         java_logo_texture.setPixel(i, 0x0003e0);
       }
     }
+*/
 
-    //java_logo_texture.setPixelsRLE16(0, JavaLogo.image);
+    java_logo_texture.setPixelsRLE16(0, JavaLogo.image);
     java_logo.setPoints(logo_points);
     java_logo.setTextureCoords(texture_coords);
     java_logo.setPosition(1320.f, 1200.0f, 1148.0f);
