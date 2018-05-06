@@ -51,16 +51,18 @@ public class JavaGrinderScreen
 
     for (i = 0; i < 4; i++)
     {
-      white_square.setPointColor(i, 0x00ffffff);
-      red_square.setPointColor(i, 0x000000ff);
-      java_logo.setPointColor(i, 0x00ffffff);
+      white_square.setPointColor(i, 0x80ffffff);
+      red_square.setPointColor(i, 0x400000ff);
+      java_logo.setPointColor(i, 0x80ffffff);
     }
 
     white_square.setPoints(white_points);
     white_square.setPosition(1320.f, 1170.0f, 2048.0f);
+    //white_square.enableAlphaBlending();
 
     red_square.setPoints(red_points);
     red_square.setPosition(1320.f, 1370.0f, 2048.0f);
+    //red_square.enableAlphaBlending();
 
 /*
     for (i = 0; i < 64 * 64; i++)
@@ -81,9 +83,14 @@ public class JavaGrinderScreen
 */
 
     java_logo_texture.setPixelsRLE16(0, JavaLogo.image);
+    java_logo_texture.enableTransparencyOnBlack();
+    //java_logo_texture.enableTransparency();
+
     java_logo.setPoints(logo_points);
     java_logo.setTextureCoords(texture_coords);
     java_logo.setPosition(1320.f, 1200.0f, 1148.0f);
+    java_logo.enableAlphaBlending();
+    //java_logo.enableAntialiasing();
 
     white_square.setContext(0);
     red_square.setContext(0);
