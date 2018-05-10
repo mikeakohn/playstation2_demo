@@ -10,8 +10,8 @@ to open a new repository for the demo.  Previously we've been
 putting the demos in the samples directory of Java Grinder but
 I since this one might have some bigger assets I wanted a
 separate repository for it.  There is still a small sample
-program with Java grinder, but it show off as much as this one
-should.
+program with Java grinder, but it's more for showing examples
+of how to use the API.
 
 If the documentation in this README doesn't make sense, please
 send me an email and I'll elaborate more.
@@ -19,7 +19,7 @@ send me an email and I'll elaborate more.
 Joining The Project
 -------------------
 
-I plan on inviting friends to help me write this demo... anyone
+I plan on inviting friends to help work on this demo... anyone
 who would like to join this project please send me an email before
 starting.
 
@@ -47,30 +47,45 @@ There are examples lower in this file.  Please don't check in any
 large files into this repo also.  Really with the limited resources
 of the Playstation 2 it shouldn't need any big files.
 
+The Hardware
+------------
+
+It might help to learn about very low level Playstation 2 hardware,
+so I created a page that explains it a bit along with links to all
+the Playstation 2 PDF programming documents:
+
+http://www.mikekohn.net/software/playstation2.php 
+
 The API
 -------
 
 So first some things to know about the Playstation 2: The system was
 mostly designed to run on a TV / CRT with an interlaced video beam.
-So even though the resolution is 640x448, the frame buffer is only
-640x224.  The video chip will draw 224 raster lines down the screen
-and after a vsync the video beam will go back down the screen in fill
-in the space between the original lines with more data.
+So even though the drawing resolution is 640x448, the frame buffer is
+only 640x224.  The video chip will draw 224 raster lines down the
+screen and after a vsync the video beam will go back to the top
+and go  down the screen to in fill in the space between the originalx
+lines with more data.  Probably using this API no one will need
+to think about this, but it might be good to know when dealing with
+"contexts" (aka double buffering).  The two contexts allow the video
+beam to read out of memory of context 1 to draw the even lines on the
+screen, while this is happening a branch new image can be drawn on
+context 2.  On the next pass of the video beam, context 2 can be
+drawn to the computer screen while context 1 is cleared and a new
+picture is created.
 
-Because of this the Playstation 2 gives the option to have 2 contexts.
-This is a kind of double buffer thing.  So it's possible to draw the
-entire display with only the 1st 640x224 sized buffer if there isn't
-a lot of data, but if there is too much data both contexts will need
-to be used.  I have an example of this in the Java Grinder samples
-directory samples/playstation2/PS2Demo.java.  The idea there is while
+I have an example of this in the Java Grinder samples directory
+samples/playstation2/PS2Demo.java.  The idea there is while
 640x224 buffer used by context 0 is being drawn by the video beam,
 the triangle and textured square can be drawing the next 640x224 frame
 in a separate buffer.
 
 All of the API calls are in the Java Grinder repository in:
 
+```
 java/net/mikekohn/java_grinder/Playstation2.java
 java/net/mikekohn/java_grinder/Draw3D/*.java
+```
 
 Some of the stuff in Math.java should work too (the sin() / cos()
 stuff).
@@ -100,4 +115,20 @@ the offset to be 1000.0, 1000.0 in the initialization code.
 
 Coding Style
 ------------
+
+When writing code, the { } should line up (unless they fit on
+one line so:
+
+```
+  for (i = 0; i < 100; i++)
+  {
+  }
+```
+
+Notice the space after "for" and the { } line up.  Also, no tabs..
+use 2 spaces.
+
+
+
+
 
