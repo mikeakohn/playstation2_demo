@@ -17,6 +17,9 @@ default: $(CLASSES)
 debug:
 	$(NAKEN_ASM) -I $(INCLUDE_PATH) -l -e -dump_symbols -o playstation2_demo.elf playstation2_demo.asm
 
+mandel:
+	$(NAKEN_ASM) -I $(INCLUDE_PATH) -l -b -dump_symbols -o mandelbrot_vu0.elf mandelbrot_vu0.asm
+
 clean:
 	@rm -f *.elf *.o *.lst *.class playstation2_demo.asm
 	@cd tools && make clean

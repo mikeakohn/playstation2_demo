@@ -1,5 +1,5 @@
 *.class
-*.asm
+playstation2_demo.asm
 *.lst
 *.elf
 bin2array
