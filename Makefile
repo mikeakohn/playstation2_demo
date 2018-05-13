@@ -2,6 +2,8 @@ INCLUDE_PATH=../naken_asm/include/playstation2
 JAVA_GRINDER=../java_grinder/java_grinder
 NAKEN_ASM=../naken_asm/naken_asm
 CLASSES= \
+  Mandelbrots.class \
+  MandelbrotsVU0.class \
   Playstation2Demo.class \
   JavaGrinderScreen.class
 
