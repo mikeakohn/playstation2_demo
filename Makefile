@@ -19,6 +19,10 @@ debug:
 
 mandel:
 	$(NAKEN_ASM) -I $(INCLUDE_PATH) -l -b -dump_symbols -o mandelbrot_vu0.bin mandelbrot_vu0.asm
+	@echo "public class MandelbrotsVU0" > MandelbrotsVU0.java
+	@echo "{" >> MandelbrotsVU0.java
+	tools/bin2array mandelbrot_vu0.bin  | sed s/array/code/ >> MandelbrotsVU0.java
+	@echo "}\n" >> MandelbrotsVU0.java
 
 clean:
 	@rm -f *.elf *.bin *.o *.lst *.class playstation2_demo.asm

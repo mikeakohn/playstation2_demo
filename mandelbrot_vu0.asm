@@ -37,6 +37,7 @@ start:
   ; while (y > 0)
   ; vi03 = 8
   nop                         iaddiu vi03, vi00, 8
+  nop                         nop
 for_y:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi03, vi03, -1
@@ -45,6 +46,7 @@ for_y:
   ; while (x > 0) .. going to decrement vi02 by 4
   ; vi02 = 64
   nop                         iaddiu vi02, vi00, 64
+  nop                         nop
 for_x:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi02, vi02, -4
@@ -121,20 +123,23 @@ next_iteration:
   ; count = count - 1
   nop                         isubiu vi04, vi04, 1
   nop                         ibeq vi05, vi00, break_iteration
+  nop                         nop
   nop                         ibne vi04, vi00, next_iteration
+  nop                         nop
 
 break_iteration:
   ; [ r0, r1, r2, r3 ] += rstep4
   add.xyzw vf20, vf20, vf11   nop
 
   nop                         ibne vi02, vi00, for_x
+  nop                         nop
 
   ; [ i0, i1, i2, i3 ] += istep
   add.xyzw vf01, vf01, vf12   nop
 
   nop                         ibne vi03, vi00, for_y
-
   nop                         nop
+
   nop[E]                      nop
   nop                         nop
 
