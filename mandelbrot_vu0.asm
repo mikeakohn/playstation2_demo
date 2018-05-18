@@ -20,24 +20,25 @@ start:
   ; vf02 = [ 2.0, 2.0, 2.0, 2.0 ]
   ; vf15 = [ 1.0, 1.0, 1.0, 1.0 ]
   ; vf01 = [ 0.0, 0.0, 0.0, 0.0 ]
+  ; vi07 = pointer to next 4 pixels to write out in data mem
   sub.xyzw vf01, vf01, vf01   lq.xyzw vf05, 0(vi00)
   addw.xyzw vf15, vf01, vf00w lq.xyzw vf06, 1(vi00)
   add.xyzw vf02, vf15, vf15   lq.xyzw vf07, 2(vi00)
   add.xyzw vf04, vf02, vf02   lq.xyzw vf08, 3(vi00)
   nop                         iaddi vi01, vi00, -1
-  nop                         mfir.xyzw vf16, vi01
-  itof0 vf16, vf16            nop
+  mul.xyzw vf05, vf05, vf04   mfir.xyzw vf16, vi01
+  itof0 vf16, vf16            iadd vi07, vi00, vi00
 
   ; Copy vf05's x value to yzw
   ; Copy vf06's x value to yzw
-  addx.yzw vf05, vf01, vf05    nop
-  addx.yzw vf06, vf01, vf06    nop
+  addx.yzw vf05, vf01, vf05   nop
+  addx.yzw vf06, vf01, vf06   nop
 
   ; y = 8; as vi03
   ; while (y > 0)
   ; vi03 = 8
   nop                         iaddiu vi03, vi00, 8
-  nop                         nop
+  ;nop                         nop
 for_y:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi03, vi03, -1
@@ -46,7 +47,7 @@ for_y:
   ; while (x > 0) .. going to decrement vi02 by 4
   ; vi02 = 64
   nop                         iaddiu vi02, vi00, 64
-  nop                         nop
+  ;nop                         nop
 for_x:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi02, vi02, -4
@@ -128,14 +129,19 @@ next_iteration:
   nop                         nop
 
 break_iteration:
+  ; Save counts in data memory
+  ftoi0 vf11, vf11            nop
+  nop                         sq.xyzw vf11, 0(vi07)
+  nop                         iaddi vi07, vi07, 1
+
   ; [ r0, r1, r2, r3 ] += rstep4
-  add.xyzw vf20, vf20, vf11   nop
+  add.xyzw vf07, vf07, vf05   nop
 
   nop                         ibne vi02, vi00, for_x
   nop                         nop
 
   ; [ i0, i1, i2, i3 ] += istep
-  add.xyzw vf01, vf01, vf12   nop
+  add.xyzw vf08, vf08, vf06   nop
 
   nop                         ibne vi03, vi00, for_y
   nop                         nop

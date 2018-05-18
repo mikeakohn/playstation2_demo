@@ -79,6 +79,11 @@ public class Mandelbrots
     float imaginary_add = i_step * 8;
     int y, n, ptr = 0;
 
+    // DEBUG DEBUG DEBUG
+    for (n = 0; n < vu0_data.length; n++) { vu0_data[n] = 127; }
+    Playstation2.vu0UploadData(0, vu0_data);
+    // DEBUG DEBUG DEBUG
+
     // Set up r_step and i_step in the VU0 params.  These values
     // shouldn't change for a single image.  Only need to set the
     // first value for the step, the VU0 code can copy the first
@@ -105,9 +110,9 @@ public class Mandelbrots
       while(Playstation2.vu0IsRunning()) { }
       Playstation2.vu0DownloadData(0, vu0_data);
 
-      for (n = 0; n < 64 * 8; n++)
+      for (n = 0; n < vu0_data.length; n++)
       {
-        image.setPixel(ptr, colors[vu0_data[n]]);
+        image.setPixel(ptr, colors[vu0_data[n] >> 3]);
         ptr++;
       }
 
