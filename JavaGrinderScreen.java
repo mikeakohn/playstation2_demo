@@ -64,24 +64,6 @@ public class JavaGrinderScreen
     red_square.setPosition(1320.f, 1370.0f, 2048.0f);
     //red_square.enableAlphaBlending();
 
-/*
-    for (i = 0; i < 64 * 64; i++)
-    {
-      if (i < 64)
-      {
-        java_logo_texture.setPixel(i, 0x00001f);
-      }
-      else if (i < 64 * 63)
-      {
-        java_logo_texture.setPixel(i, 0x007c00);
-      }
-      else
-      {
-        java_logo_texture.setPixel(i, 0x0003e0);
-      }
-    }
-*/
-
     java_logo_texture.setPixelsRLE16(0, JavaLogo.image);
     java_logo_texture.enableTransparencyOnBlack();
     //java_logo_texture.enableTransparency();
