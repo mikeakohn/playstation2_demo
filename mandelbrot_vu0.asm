@@ -25,9 +25,10 @@ start:
   addw.xyzw vf15, vf01, vf00w lq.xyzw vf06, 1(vi00)
   add.xyzw vf02, vf15, vf15   lq.xyzw vf07, 2(vi00)
   add.xyzw vf04, vf02, vf02   lq.xyzw vf08, 3(vi00)
-  nop                         iaddi vi01, vi00, -1
+  nop                         iaddiu vi01, vi00, 0x4000
+  nop                         iadd vi01, vi01, vi01
   mul.xyzw vf05, vf05, vf04   mfir.xyzw vf16, vi01
-  itof0 vf16, vf16            iadd vi07, vi00, vi00
+  itof0.xyzw vf16, vf16       iadd vi07, vi00, vi00
 
   ; Copy vf05's x value to yzw
   ; Copy vf06's x value to yzw

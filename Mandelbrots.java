@@ -73,8 +73,8 @@ public class Mandelbrots
     // Upload the code to VU0 first.
     Playstation2.vu0UploadCode(MandelbrotsVU0.code);
 
-    float r_step = real_end - real_start / 64;
-    float i_step = imaginary_end - imaginary_start / 64;
+    float r_step = (real_end - real_start) / 64;
+    float i_step = (imaginary_end - imaginary_start) / 64;
 
     float imaginary_add = i_step * 8;
     int y, n, ptr = 0;
@@ -90,15 +90,21 @@ public class Mandelbrots
     // value to the other 3.  r0, r1, r2, r3 shouldn't change between
     // runs.
     vu0_params[0] = r_step;
+    //vu0_params[1] = 0;
+    //vu0_params[2] = 0;
+    //vu0_params[3] = 0;
     vu0_params[4] = i_step;
-    vu0_params[5] = real_start;
-    vu0_params[6] = real_start + r_step;
-    vu0_params[7] = vu0_params[6] + r_step;
-    vu0_params[8] = vu0_params[7] + r_step;
-    vu0_params[9] = imaginary_start;
-    vu0_params[10] = imaginary_start + i_step;
-    vu0_params[11] = vu0_params[11] + i_step;
-    vu0_params[12] = vu0_params[12] + i_step;
+    //vu0_params[5] = 0;
+    //vu0_params[6] = 0;
+    //vu0_params[7] = 0;
+    vu0_params[8] = real_start;
+    vu0_params[9] = real_start + r_step;
+    vu0_params[10] = vu0_params[10] + r_step;
+    vu0_params[11] = vu0_params[11] + r_step;
+    vu0_params[12] = imaginary_start;
+    vu0_params[13] = imaginary_start + i_step;
+    vu0_params[14] = vu0_params[13] + i_step;
+    vu0_params[15] = vu0_params[15] + i_step;
 
     for (y = 0; y < 8; y++)
     {
@@ -112,7 +118,11 @@ public class Mandelbrots
 
       for (n = 0; n < vu0_data.length; n++)
       {
-        image.setPixel(ptr, colors[vu0_data[n] >> 3]);
+        // FIXME: To Deal with issues in VU0.  Remove later.
+        int data = vu0_data[n];
+        if (data > 127 || data < 0) { data = 127; }
+        image.setPixel(ptr, colors[data >> 3]);
+        //image.setPixel(ptr, colors[vu0_data[n] >> 3]);
         ptr++;
       }
 
