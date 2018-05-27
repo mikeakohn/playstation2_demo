@@ -11,7 +11,7 @@
   ; };
 
 start:
-  ; vf05 = [ r_step, r_step, r_step, r_step ]
+  ; vf05 = [ r_step * 4, r_step * 4, r_step * 4, r_step * 4 ]
   ; vf06 = [ i_step, i_step, i_step, i_step ]
   ; vf07 = [ r0, r1, r2, r3 ]
   ; vf08 = [ i0, i1, i2, i3 ]

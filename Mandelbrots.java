@@ -99,12 +99,12 @@ public class Mandelbrots
     //vu0_params[7] = 0;
     vu0_params[8] = real_start;
     vu0_params[9] = real_start + r_step;
-    vu0_params[10] = vu0_params[10] + r_step;
-    vu0_params[11] = vu0_params[11] + r_step;
+    vu0_params[10] = vu0_params[9] + r_step;
+    vu0_params[11] = vu0_params[10] + r_step;
     vu0_params[12] = imaginary_start;
     vu0_params[13] = imaginary_start + i_step;
     vu0_params[14] = vu0_params[13] + i_step;
-    vu0_params[15] = vu0_params[15] + i_step;
+    vu0_params[15] = vu0_params[14] + i_step;
 
     for (y = 0; y < 8; y++)
     {
@@ -126,10 +126,10 @@ public class Mandelbrots
         ptr++;
       }
 
-      vu0_params[9] = imaginary_add;
-      vu0_params[10] = imaginary_add;
-      vu0_params[11] = imaginary_add;
-      vu0_params[12] = imaginary_add;
+      vu0_params[12] += imaginary_add;
+      vu0_params[13] += imaginary_add;
+      vu0_params[14] += imaginary_add;
+      vu0_params[15] += imaginary_add;
     }
 
     Playstation2.showContext(0);
