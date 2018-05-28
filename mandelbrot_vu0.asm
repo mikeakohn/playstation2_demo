@@ -13,7 +13,8 @@
 start:
   ; vf05 = [ r_step * 4, r_step * 4, r_step * 4, r_step * 4 ]
   ; vf06 = [ i_step, i_step, i_step, i_step ]
-  ; vf07 = [ r0, r1, r2, r3 ]
+  ; vf07 = [ r0, r1, r2, r3 ] (initial values)
+  ; vf17 = [ r0, r1, r2, r3 ]
   ; vf08 = [ i0, i1, i2, i3 ]
   ; vf16 = [ -32768.0, -32768.0, -32768.0, -32768.0 ]
   ; vf04 = [ 4.0, 4.0, 4.0, 4.0 ]
@@ -39,16 +40,17 @@ start:
   ; while (y > 0)
   ; vi03 = 8
   nop                         iaddiu vi03, vi00, 8
-  ;nop                         nop
 for_y:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi03, vi03, -1
+
+  ; vf17 = [ r0, r1, r2, r3 ]
+  add.xyzw vf17, vf07, vf01   nop
 
   ; x = 64; as vi02
   ; while (x > 0) .. going to decrement vi02 by 4
   ; vi02 = 64
   nop                         iaddiu vi02, vi00, 64
-  ;nop                         nop
 for_x:
   ;; An optimization could be to move this lower an combine with upper instr.
   nop                         iaddi vi02, vi02, -4
@@ -75,16 +77,18 @@ next_iteration:
   mul.xyzw vf12, vf12, vf02   nop
 
   ; vf13 = tr = ((zr * zr) - (zi * zi));
+  ; FIXME: Use msub
   mul.xyzw vf13, vf09, vf09   nop
   mul.xyzw vf14, vf10, vf10   nop
-  sub.xyzw vf13, vf09, vf10   nop
+  sub.xyzw vf13, vf13, vf14   nop
 
   ; vf09 = zr = tr + r;
   ; vf10 = zi = ti + i;
-  add.xyzw vf09, vf13, vf07   nop
+  add.xyzw vf09, vf13, vf17   nop
   add.xyzw vf10, vf12, vf08   nop
 
   ; if ((zr * zr) + (zi * zi) > 4) break;
+  ; FIXME: Use madd
   mul.xyzw vf13, vf09, vf09   nop
   mul.xyzw vf14, vf10, vf10   nop
   add.xyzw vf13, vf13, vf14   nop
@@ -113,7 +117,7 @@ next_iteration:
 
   ; if vf03 == [ 0, 0, 0, 0 ]; break
   ; VU0 doesn't have esum... awesome :(
-  ftoi0 vf14, vf14            nop
+  ftoi0.xyzw vf14, vf03       nop
   nop                         mtir vi05, vf14x
   nop                         mtir vi06, vf14y
   nop                         iadd vi05, vi05, vi06
@@ -131,19 +135,22 @@ next_iteration:
 
 break_iteration:
   ; Save counts in data memory
-  ftoi0 vf11, vf11            nop
+  ; FIXME: Use vi07++
+  ftoi0.xyzw vf11, vf11       nop
   nop                         sq.xyzw vf11, 0(vi07)
   nop                         iaddi vi07, vi07, 1
 
   ; [ r0, r1, r2, r3 ] += rstep4
-  add.xyzw vf07, vf07, vf05   nop
+  add.xyzw vf17, vf17, vf05   nop
 
+  ; next x
   nop                         ibne vi02, vi00, for_x
   nop                         nop
 
   ; [ i0, i1, i2, i3 ] += istep
   add.xyzw vf08, vf08, vf06   nop
 
+  ; next y
   nop                         ibne vi03, vi00, for_y
   nop                         nop
 
