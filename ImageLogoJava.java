@@ -1,5 +1,5 @@
 
-public class JavaLogo
+public class ImageLogoJava
 {
   static byte[] image =
   {

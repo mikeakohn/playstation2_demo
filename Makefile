@@ -2,10 +2,16 @@ INCLUDE_PATH=../naken_asm/include/playstation2
 JAVA_GRINDER=../java_grinder/java_grinder
 NAKEN_ASM=../naken_asm/naken_asm
 CLASSES= \
+  BillionDevices.class \
+  ImageBillionDevices.class \
+  ImageLogoJava.class \
+  ImageLogoJavaGrinder.class \
+  ImageLogoNakenAsm.class \
+  ImageLogoPS2.class \
+  Logos.class \
   Mandelbrots.class \
   MandelbrotsVU0.class \
-  Playstation2Demo.class \
-  JavaGrinderScreen.class
+  Playstation2Demo.class
 
 default: $(CLASSES)
 	$(JAVA_GRINDER) -v Playstation2Demo.class playstation2_demo.asm playstation2

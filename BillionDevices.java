@@ -1,9 +1,8 @@
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFan;
 import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFanWithTexture;
 import net.mikekohn.java_grinder.Draw3D.Draw3DTexture16;
 
-public class JavaGrinderScreen
+public class BillionDevices
 {
   static float[] points =
   {
@@ -23,7 +22,7 @@ public class JavaGrinderScreen
 
   static void run()
   {
-    Draw3DTexture16 billion_devices_texture = new Draw3DTexture16(128, 64);
+    Draw3DTexture16 texture_billion_devices = new Draw3DTexture16(128, 64);
     Draw3DTriangleFanWithTexture billion_devices = new Draw3DTriangleFanWithTexture(4);
     int i;
 
@@ -32,7 +31,7 @@ public class JavaGrinderScreen
       billion_devices.setPointColor(i, 0x80808080);
     }
 
-    billion_devices_texture.setPixelsRLE16(0, ImageBillionDevices.image);
+    texture_billion_devices.setPixelsRLE16(0, ImageBillionDevices.image);
 
     billion_devices.setPoints(points);
     billion_devices.setTextureCoords(texture_coords);
@@ -49,7 +48,7 @@ public class JavaGrinderScreen
       // Clear the entire context of where this is going to draw.
       Playstation2.clearContext(0);
 
-      billion_devices_texture.upload();
+      texture_billion_devices.upload();
       billion_devices.draw();
     }
 
@@ -61,7 +60,7 @@ public class JavaGrinderScreen
       // Clear the entire context of where this is going to draw.
       Playstation2.clearContext(0);
 
-      billion_devices_texture.upload();
+      texture_billion_devices.upload();
       billion_devices.rotateY512(i * 16);
       billion_devices.draw();
     }
