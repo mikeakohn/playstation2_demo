@@ -77,11 +77,11 @@ public class Mandelbrots
     float i_step = (imaginary_end - imaginary_start) / 64;
 
     float imaginary_add = i_step * 8;
-    int y, n, ptr = 0;
+    int y, n, ptr;
 
     // DEBUG DEBUG DEBUG
-    for (n = 0; n < vu0_data.length; n++) { vu0_data[n] = 127; }
-    Playstation2.vu0UploadData(0, vu0_data);
+    //for (n = 0; n < vu0_data.length; n++) { vu0_data[n] = 127; }
+    //Playstation2.vu0UploadData(0, vu0_data);
     // DEBUG DEBUG DEBUG
 
     // Set up r_step and i_step in the VU0 params.  These values
@@ -106,6 +106,10 @@ public class Mandelbrots
     vu0_params[14] = vu0_params[13] + i_step;
     vu0_params[15] = vu0_params[14] + i_step;
 
+    //for (ptr = 0; ptr < 64 * 64; ptr++) { image.setPixel(ptr, 0); }
+
+    ptr = 0;
+
     for (y = 0; y < 8; y++)
     {
       // Upload data to draw the Mandelbrot and wait until it's done.
@@ -120,6 +124,7 @@ public class Mandelbrots
       {
         // FIXME: To Deal with issues in VU0.  Remove later.
         int data = vu0_data[n];
+
         if (data > 127 || data < 0) { data = 127; }
         image.setPixel(ptr, colors[data >> 3]);
         //image.setPixel(ptr, colors[vu0_data[n] >> 3]);
