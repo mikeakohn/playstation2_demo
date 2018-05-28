@@ -77,10 +77,8 @@ next_iteration:
   mul.xyzw vf12, vf12, vf02   nop
 
   ; vf13 = tr = ((zr * zr) - (zi * zi));
-  ; FIXME: Use msub
-  mul.xyzw vf13, vf09, vf09   nop
-  mul.xyzw vf14, vf10, vf10   nop
-  sub.xyzw vf13, vf13, vf14   nop
+  mula.xyzw acc, vf09, vf09   nop
+  msub.xyzw vf13, vf10, vf10  nop
 
   ; vf09 = zr = tr + r;
   ; vf10 = zi = ti + i;
@@ -88,10 +86,8 @@ next_iteration:
   add.xyzw vf10, vf12, vf08   nop
 
   ; if ((zr * zr) + (zi * zi) > 4) break;
-  ; FIXME: Use madd
-  mul.xyzw vf13, vf09, vf09   nop
-  mul.xyzw vf14, vf10, vf10   nop
-  add.xyzw vf13, vf13, vf14   nop
+  mula.xyzw acc, vf09, vf09   nop
+  madd.xyzw vf13, vf10, vf10  nop
 
   ; Estimates if a float is less than 4 (output is 1) or more than 4
   ; output is 0.
@@ -135,10 +131,8 @@ next_iteration:
 
 break_iteration:
   ; Save counts in data memory
-  ; FIXME: Use vi07++
   ftoi0.xyzw vf11, vf11       nop
-  nop                         sq.xyzw vf11, 0(vi07)
-  nop                         iaddi vi07, vi07, 1
+  nop                         sqi.xyzw vf11, (vi07++)
 
   ; [ r0, r1, r2, r3 ] += rstep4
   add.xyzw vf17, vf17, vf05   nop
