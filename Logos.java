@@ -1,6 +1,6 @@
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFanWithTexture;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTexture16;
+import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
+import net.mikekohn.java_grinder.Draw3D.Texture16;
 
 public class Logos
 {
@@ -30,14 +30,14 @@ public class Logos
 
   static void run()
   {
-    Draw3DTexture16 texture_ps2 = new Draw3DTexture16(128, 64);
-    Draw3DTexture16 texture_naken_asm = new Draw3DTexture16(128, 64);
-    Draw3DTexture16 texture_java_grinder = new Draw3DTexture16(128, 64);
-    Draw3DTexture16 texture_java = new Draw3DTexture16(64, 64);
-    Draw3DTriangleFanWithTexture ps2 = new Draw3DTriangleFanWithTexture(4);
-    Draw3DTriangleFanWithTexture naken_asm = new Draw3DTriangleFanWithTexture(4);
-    Draw3DTriangleFanWithTexture java_grinder = new Draw3DTriangleFanWithTexture(4);
-    Draw3DTriangleFanWithTexture java = new Draw3DTriangleFanWithTexture(4);
+    Texture16 texture_ps2 = new Texture16(128, 64);
+    Texture16 texture_naken_asm = new Texture16(128, 64);
+    Texture16 texture_java_grinder = new Texture16(128, 64);
+    Texture16 texture_java = new Texture16(64, 64);
+    TriangleFanWithTexture ps2 = new TriangleFanWithTexture(4);
+    TriangleFanWithTexture naken_asm = new TriangleFanWithTexture(4);
+    TriangleFanWithTexture java_grinder = new TriangleFanWithTexture(4);
+    TriangleFanWithTexture java = new TriangleFanWithTexture(4);
 
     float distance_x = 230;
     float distance_y = 170;

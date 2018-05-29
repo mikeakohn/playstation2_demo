@@ -1,7 +1,7 @@
 
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFanWithTexture;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTexture16;
+import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
+import net.mikekohn.java_grinder.Draw3D.Texture16;
 
 public class Mandelbrots
 {
@@ -51,8 +51,8 @@ public class Mandelbrots
 
   static void run()
   {
-    Draw3DTriangleFanWithTexture mandelbrot = new Draw3DTriangleFanWithTexture(4);
-    Draw3DTexture16 image = new Draw3DTexture16(64, 64);
+    TriangleFanWithTexture mandelbrot = new TriangleFanWithTexture(4);
+    Texture16 image = new Texture16(64, 64);
 
     mandelbrot.setPointColors(mandelbrot_colors);
     mandelbrot.setPoints(mandelbrot_points);

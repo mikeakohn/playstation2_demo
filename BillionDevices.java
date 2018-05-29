@@ -1,6 +1,6 @@
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTriangleFanWithTexture;
-import net.mikekohn.java_grinder.Draw3D.Draw3DTexture16;
+import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
+import net.mikekohn.java_grinder.Draw3D.Texture16;
 
 public class BillionDevices
 {
@@ -22,8 +22,8 @@ public class BillionDevices
 
   static void run()
   {
-    Draw3DTexture16 texture_billion_devices = new Draw3DTexture16(128, 64);
-    Draw3DTriangleFanWithTexture billion_devices = new Draw3DTriangleFanWithTexture(4);
+    Texture16 texture_billion_devices = new Texture16(128, 64);
+    TriangleFanWithTexture billion_devices = new TriangleFanWithTexture(4);
     int i;
 
     for (i = 0; i < 4; i++)
