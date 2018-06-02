@@ -6,6 +6,7 @@ public class Playstation2Demo
   {
     BillionDevices.run();
     Logos.run();
+    Stars.run();
     Mandelbrots.run();
 
     Playstation2.showContext(0);

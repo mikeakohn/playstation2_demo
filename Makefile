@@ -11,7 +11,8 @@ CLASSES= \
   Logos.class \
   Mandelbrots.class \
   MandelbrotsVU0.class \
-  Playstation2Demo.class
+  Playstation2Demo.class \
+  Stars.class
 
 default: $(CLASSES)
 	$(JAVA_GRINDER) -v Playstation2Demo.class playstation2_demo.asm playstation2
