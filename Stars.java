@@ -10,11 +10,11 @@ public class Stars
 
     for (n = 0; n < stars.length; n += 4)
     {
-      stars[n] += stars[n + 2];
+      stars[n + 0] += stars[n + 2];
       stars[n + 1] += stars[n + 3];
 
       // If star is beyond boundary, erase it and reset it
-      if (stars[n] <= 0 || stars[n] >= 640 ||
+      if (stars[n + 0] <= 0 || stars[n + 0] >= 640 ||
           stars[n + 1] <= 0 || stars[n + 1] >= 448)
       {
         stars[n + 0] = (short)(stars_init[n + 0] << 1);
@@ -26,10 +26,10 @@ public class Stars
 
       for (int c = 0; c < 4; c++)
       {
-        float fx = (float)(x + 1000);
-        float fy = (float)(y + 1000);
+        float fx = (float)(x - 320);
+        float fy = (float)(y - 224);
 
-        points.setPoint(n + c, fx, fy, 2048.0f);
+        points.setPoint(n + c, fx, fy, 0.0f);
 
         x -= stars[n + 2];
         y -= stars[n + 3];
@@ -47,6 +47,7 @@ public class Stars
     Points points = new Points(stars_init.length);
 
     points.disableGouraudShading();
+    //points.disableAlphaBlending();
 
     for (n = 0; n < stars.length; n = n + 4)
     {
@@ -55,11 +56,13 @@ public class Stars
       stars[n + 2] = stars_init[n + 2];
       stars[n + 3] = stars_init[n + 3];
 
-      points.setPointColor(n + 0, 0x00ffffff);
-      points.setPointColor(n + 1, 0x00aaaaaa);
-      points.setPointColor(n + 2, 0x00888888);
-      points.setPointColor(n + 3, 0x00666666);
+      points.setPointColor(n + 0, 0x80ffffff);
+      points.setPointColor(n + 1, 0x80aaaaaa);
+      points.setPointColor(n + 2, 0x80888888);
+      points.setPointColor(n + 3, 0x80666666);
     }
+
+    points.setPosition(1320.0f, 1224.0f, 2048.0f);
 
     // Main part of method to animate the stars
     for (n = 0; n < 60 * 5; n++)
@@ -71,8 +74,11 @@ public class Stars
 
       // Clear the entire context of where this is going to draw.
       Playstation2.clearContext(n);
+      points.setContext(n);
 
       animateStars(stars, points);
+
+      points.draw();
     }
   }
 
