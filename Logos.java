@@ -45,14 +45,14 @@ public class Logos
     float dx = 1.0f;
     float dy = 2.0f;
 
-    int i;
+    int n;
 
-    for (i = 0; i < 4; i++)
+    for (n = 0; n < 4; n++)
     {
-      ps2.setPointColor(i, 0x80808080);
-      naken_asm.setPointColor(i, 0x80808080);
-      java_grinder.setPointColor(i, 0x80808080);
-      java.setPointColor(i, 0x80808080);
+      ps2.setPointColor(n, 0x80808080);
+      naken_asm.setPointColor(n, 0x80808080);
+      java_grinder.setPointColor(n, 0x80808080);
+      java.setPointColor(n, 0x80808080);
     }
 
     texture_ps2.setPixelsRLE16(0, ImageLogoPS2.image);
@@ -69,76 +69,82 @@ public class Logos
 
     ps2.setPoints(points);
     ps2.setTextureCoords(texture_coords);
-    //ps2.setPosition(1100.f, 1050.0f, 2048.0f);
     ps2.setPosition(1320.0f - distance_x, 1218.0f - distance_y, z);
     ps2.enableAlphaBlending();
     ps2.setContext(0);
 
     naken_asm.setPoints(points);
     naken_asm.setTextureCoords(texture_coords);
-    //naken_asm.setPosition(1100.0f, 1350.0f, z);
     naken_asm.setPosition(1320.0f - distance_x, 1218.0f + distance_y, z);
     naken_asm.enableAlphaBlending();
     naken_asm.setContext(0);
 
     java_grinder.setPoints(points);
     java_grinder.setTextureCoords(texture_coords);
-    //java_grinder.setPosition(1550.0f, 1050.0f, z);
     java_grinder.setPosition(1320.0f + distance_x, 1218.0f - distance_y, z);
     java_grinder.enableAlphaBlending();
     java_grinder.setContext(0);
 
     java.setPoints(points_square);
     java.setTextureCoords(texture_coords);
-    //java.setPosition(1550.0f, 1350.0f, z);
     java.setPosition(1320.0f + distance_x, 1218.0f + distance_y, z);
     java.enableAlphaBlending();
     java.setContext(0);
 
     Playstation2.showContext(0);
 
-    for (i = 0; i < 60 * 3; i++)
+    for (n = 0; n < 60 * 3; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
 
       // Clear the entire context of where this is going to draw.
-      Playstation2.clearContext(0);
+      Playstation2.clearContext(n);
 
       texture_ps2.upload();
+      ps2.setContext(n);
       ps2.draw();
 
       texture_naken_asm.upload();
+      naken_asm.setContext(n);
       naken_asm.draw();
 
       texture_java_grinder.upload();
+      java_grinder.setContext(n);
       java_grinder.draw();
 
       texture_java.upload();
+      java.setContext(n);
       java.draw();
     }
 
-    for (i = 0; i < 47; i++)
+    for (n = 0; n < 47; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
 
       // Clear the entire context of where this is going to draw.
-      Playstation2.clearContext(0);
+      Playstation2.clearContext(n);
 
       texture_ps2.upload();
+      ps2.setContext(n);
       ps2.setPosition(1320.0f - distance_x, 1218.0f - distance_y, z);
       ps2.draw();
 
       texture_naken_asm.upload();
+      naken_asm.setContext(n);
       naken_asm.setPosition(1320.0f - distance_x, 1218.0f + distance_y, z);
       naken_asm.draw();
 
       texture_java_grinder.upload();
+      java_grinder.setContext(n);
       java_grinder.setPosition(1320.0f + distance_x, 1218.0f - distance_y, z);
       java_grinder.draw();
 
       texture_java.upload();
+      java.setContext(n);
       java.setPosition(1320.0f + distance_x, 1218.0f + distance_y, z);
       java.draw();
 
