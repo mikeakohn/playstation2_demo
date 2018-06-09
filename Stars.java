@@ -185,6 +185,24 @@ public class Stars
         if (n > 20) { distance += 100; }
       }
     }
+
+    // Rotate stars and disappear.
+    for (n = 0; n < 60 * 2; n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      // Then show the last drawn frame.
+      Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.clearContext(n);
+
+      points.setContext(n);
+      points.rotateZ512(n * 2);
+      java_grinder.setContext(n);
+
+      animateStars(stars, points);
+    }
   }
 
   public static short[] stars_init =
