@@ -1,9 +1,29 @@
 
 import net.mikekohn.java_grinder.Playstation2;
 import net.mikekohn.java_grinder.Draw3D.Points;
+import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
+import net.mikekohn.java_grinder.Draw3D.Texture16;
+import net.mikekohn.java_grinder.Math;
+import net.mikekohn.java_grinder.Memory;
 
 public class Stars
 {
+  static float[] object_points =
+  {
+    -64.0f,  64.0f, 0.f,
+     64.0f,  64.0f, 0.f,
+     64.0f, -64.0f, 0.f,
+    -64.0f, -64.0f, 0.f,
+  };
+
+  static float[] texture_coords =
+  {
+    0.0f, 1.0f,
+    1.0f, 1.0f,
+    1.0f, 0.0f,
+    0.0f, 0.0f,
+  };
+
   public static void animateStars(short[] stars, Points points)
   {
     int n;
@@ -35,19 +55,42 @@ public class Stars
         y -= stars[n + 3];
       }
     }
+
+      points.setPosition(1320.0f, 1224.0f, 2048.0f);
+      points.draw();
+      points.setPosition(1321.0f, 1224.0f, 2048.0f);
+      points.draw();
+      points.setPosition(1320.0f, 1225.0f, 2048.0f);
+      points.draw();
+      points.setPosition(1321.0f, 1225.0f, 2048.0f);
+      points.draw();
   }
 
   public static void run()
   {
     int n;
+    int state;
 
     // Points will be number of stars * 4 since each star will be
     // 4 points (1 bright and 3 gradually less bright).
     short[] stars = new short[stars_init.length];
     Points points = new Points(stars_init.length);
+    Texture16 texture_java_grinder = new Texture16(256, 64);
+    TriangleFanWithTexture java_grinder = new TriangleFanWithTexture(4);
+    byte[] image_java_grinder = Memory.preloadByteArray("assets/java_grinder_title.trle16");
+    byte[] image_on_playstation2 = Memory.preloadByteArray("assets/on_playstation2.trle16");
 
-    points.disableGouraudShading();
-    //points.disableAlphaBlending();
+    texture_java_grinder.setPixelsRLE16(0, image_java_grinder);
+    texture_java_grinder.enableTransparencyOnBlack();
+    java_grinder.enableAlphaBlending();
+
+    for (n = 0; n < 4; n++)
+    {
+      java_grinder.setPointColor(n, 0x80808080);
+    }
+
+    java_grinder.setPoints(object_points);
+    java_grinder.setTextureCoords(texture_coords);
 
     for (n = 0; n < stars.length; n = n + 4)
     {
@@ -65,7 +108,7 @@ public class Stars
     points.setPosition(1320.0f, 1224.0f, 2048.0f);
 
     // Main part of method to animate the stars
-    for (n = 0; n < 60 * 5; n++)
+    for (n = 0; n < 60 * 2; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       // Then show the last drawn frame.
@@ -74,11 +117,73 @@ public class Stars
 
       // Clear the entire context of where this is going to draw.
       Playstation2.clearContext(n);
+
       points.setContext(n);
+      java_grinder.setContext(n);
 
       animateStars(stars, points);
+    }
 
-      points.draw();
+    for (state = 0; state < 2; state++)
+    {
+      float y = 1120.0f;
+      float distance = 4000.0f;
+
+      if (state == 1)
+      {
+        texture_java_grinder.setPixelsRLE16(0, image_on_playstation2);
+      }
+
+      texture_java_grinder.upload();
+      java_grinder.rotateY512(0);
+
+      for (n = 0; n < 60 * 3; n++)
+      {
+        // Wait until the video beam is done drawing the last frame.
+        // Then show the last drawn frame.
+        Playstation2.waitVsync();
+        Playstation2.showContext(n + 1);
+
+        // Clear the entire context of where this is going to draw.
+        Playstation2.clearContext(n);
+
+        points.setContext(n);
+        java_grinder.setContext(n);
+
+        animateStars(stars, points);
+
+        java_grinder.setPosition(1320.0f, y, distance);
+        java_grinder.draw();
+
+        if (distance > 1000.0f)
+        {
+          y = 1120.0f + (Math.sin512(n * 3) * 200);
+
+          distance = distance - 40;
+        }
+      }
+
+      for (n = 0; n < 90; n++)
+      {
+        // Wait until the video beam is done drawing the last frame.
+        // Then show the last drawn frame.
+        Playstation2.waitVsync();
+        Playstation2.showContext(n + 1);
+
+        // Clear the entire context of where this is going to draw.
+        Playstation2.clearContext(n);
+
+        points.setContext(n);
+        java_grinder.setContext(n);
+
+        animateStars(stars, points);
+
+        java_grinder.rotateY512(n * 30);
+        java_grinder.setPosition(1320.0f, y, distance);
+        java_grinder.draw();
+
+        if (n > 20) { distance += 100; }
+      }
     }
   }
 
