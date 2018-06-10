@@ -1,5 +1,6 @@
 
 import net.mikekohn.java_grinder.Playstation2;
+import net.mikekohn.java_grinder.Memory;
 import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
 import net.mikekohn.java_grinder.Draw3D.Texture16;
 
@@ -25,7 +26,7 @@ public class Mandelbrots
     0x001f,  // f
   };
 
-  static int[] mandelbrot_colors =
+  static int[] texture_colors =
   {
     0x00ffffff,
     0x00ffffff,
@@ -33,12 +34,20 @@ public class Mandelbrots
     0x00ffffff,
   };
 
-  static float[] mandelbrot_points =
+  static float[] points_64 =
   {
-    -30.0f,  30.0f, 0.f,
-     30.0f,  30.0f, 0.f,
-     30.0f, -30.0f, 0.f,
-    -30.0f, -30.0f, 0.f,
+    -32.0f,  32.0f, 0.f,
+     32.0f,  32.0f, 0.f,
+     32.0f, -32.0f, 0.f,
+    -32.0f, -32.0f, 0.f,
+  };
+
+  static float[] points_128_64 =
+  {
+    -64.0f,  32.0f, 0.f,
+     64.0f,  32.0f, 0.f,
+     64.0f, -32.0f, 0.f,
+    -64.0f, -32.0f, 0.f,
   };
 
   static float[] texture_coords =
@@ -52,12 +61,30 @@ public class Mandelbrots
   static void run()
   {
     TriangleFanWithTexture mandelbrot = new TriangleFanWithTexture(4);
-    Texture16 image = new Texture16(64, 64);
+    TriangleFanWithTexture two_vector = new TriangleFanWithTexture(4);
+    TriangleFanWithTexture one_mips = new TriangleFanWithTexture(4);
 
-    mandelbrot.setPointColors(mandelbrot_colors);
-    mandelbrot.setPoints(mandelbrot_points);
+    Texture16 texture_mandelbrot = new Texture16(64, 64);
+    Texture16 texture_two_vector = new Texture16(128, 64);
+    Texture16 texture_one_mips = new Texture16(128, 64);
+
+    byte[] image_two_vector = Memory.preloadByteArray("assets/two_vector.trle16");
+    byte[] image_one_mips = Memory.preloadByteArray("assets/one_mips.trle16");
+
+    mandelbrot.setPointColors(texture_colors);
+    mandelbrot.setPoints(points_64);
     mandelbrot.setTextureCoords(texture_coords);
-    mandelbrot.setPosition(1320.f, 1200.0f, 1148.0f);
+    mandelbrot.setPosition(1320.f, 1240.0f, 1148.0f);
+
+    texture_two_vector.setPixelsRLE16(0, image_two_vector);
+    two_vector.setPointColors(texture_colors);
+    two_vector.setPoints(points_128_64);
+    two_vector.setTextureCoords(texture_coords);
+
+    texture_one_mips.setPixelsRLE16(0, image_one_mips);
+    one_mips.setPointColors(texture_colors);
+    one_mips.setPoints(points_128_64);
+    one_mips.setTextureCoords(texture_coords);
 
     // Pass in 16 floats as paramters (described in the mandelbrot_vu0.asm
     // file) and expect 64 * 8 pixels back.
@@ -78,6 +105,7 @@ public class Mandelbrots
 
     float imaginary_add = i_step * 8;
     int y, n, ptr;
+    float posx, posz;
 
     // DEBUG DEBUG DEBUG
     //for (n = 0; n < vu0_data.length; n++) { vu0_data[n] = 127; }
@@ -106,8 +134,6 @@ public class Mandelbrots
     vu0_params[14] = vu0_params[13] + i_step;
     vu0_params[15] = vu0_params[14] + i_step;
 
-    //for (ptr = 0; ptr < 64 * 64; ptr++) { image.setPixel(ptr, 0); }
-
     ptr = 0;
 
     for (y = 0; y < 8; y++)
@@ -126,8 +152,7 @@ public class Mandelbrots
         int data = vu0_data[n];
 
         if (data > 127 || data < 0) { data = 127; }
-        image.setPixel(ptr, colors[data >> 3]);
-        //image.setPixel(ptr, colors[vu0_data[n] >> 3]);
+        texture_mandelbrot.setPixel(ptr, colors[data >> 3]);
         ptr++;
       }
 
@@ -137,18 +162,84 @@ public class Mandelbrots
       vu0_params[15] += imaginary_add;
     }
 
-    Playstation2.showContext(0);
+    posx = 1000.0f;
+    posz = 3000.0f;
 
-    for (n = 0; n < 60 * 3; n++)
+    // Two vector units image
+    for (n = 0; n < 61; n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      // Then show the last drawn frame.
+      Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.clearContext(n);
+
+      texture_two_vector.upload();
+
+      two_vector.setContext(n);
+      two_vector.setPosition(posx, 1100.0f, posz);
+      two_vector.rotateZ512((n - 60) * 8);
+      two_vector.draw();
+
+      posx += 5.0f;
+      posz -= 35.0f;
+    }
+
+    posx = 1000.0f;
+    posz = 3000.0f;
+
+    // One MIPS image
+    for (n = 0; n < 61; n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      // Then show the last drawn frame.
+      Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.clearContext(n);
+
+      texture_two_vector.upload();
+
+      two_vector.setContext(n);
+      two_vector.draw();
+
+      texture_one_mips.upload();
+
+      one_mips.setContext(n);
+      one_mips.setPosition(posx, 1380.0f, posz);
+      one_mips.rotateZ512((n - 60) * 8);
+      one_mips.draw();
+
+      posx += 5.0f;
+      posz -= 35.0f;
+    }
+
+    for (n = 0; n < 61 * 3; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
 
       // Clear the entire context of where this is going to draw.
-      Playstation2.clearContext(0);
+      Playstation2.showContext(n + 1);
+      Playstation2.clearContext(n);
 
-      image.upload();
+      texture_mandelbrot.upload();
+
+      mandelbrot.setContext(n);
       mandelbrot.draw();
+
+      texture_two_vector.upload();
+
+      two_vector.setContext(n);
+      two_vector.draw();
+
+      texture_one_mips.upload();
+
+      one_mips.setContext(n);
+      one_mips.draw();
     }
   }
 }
