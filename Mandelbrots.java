@@ -13,16 +13,16 @@ public class Mandelbrots
     0x1c00,  // 2
     0x3c00,  // 3
     0x7c00,  // 4
-    0x0c00,  // 5
+    0x3c00,  // 5
     0x0c00,  // 6
     0x0c01,  // 7
     0x0401,  // 8
     0x0403,  // 9
-    0x0033,  // a
+    0x0433,  // a
     0x0037,  // b
-    0x0017,  // c
-    0x001f,  // d
-    0x000f,  // e
+    0x0007,  // c
+    0x000f,  // d
+    0x001f,  // e
     0x001f,  // f
   };
 
@@ -152,8 +152,6 @@ public class Mandelbrots
     two_vector.enableAlphaBlending();
     one_mips.enableAlphaBlending();
 
-    int m = 0;
-
     byte[] image_two_vector = Memory.preloadByteArray("assets/two_vector.trle16");
     byte[] image_one_mips = Memory.preloadByteArray("assets/one_mips.trle16");
 
@@ -180,10 +178,10 @@ public class Mandelbrots
     r_step = (real_end - real_start) / 64;
     i_step = (imaginary_end - imaginary_start) / 64;
 
-    float drs = (real_start_0 - real_start) / 180;
-    float dre = (real_end_0 - real_end) / 180;
-    float dis = (imaginary_start_0 - imaginary_start) / 180;
-    float die = (imaginary_end_0 - imaginary_end) / 180;
+    float drs = (real_start_0 - real_start) / 90;
+    float dre = (real_end_0 - real_end) / 90;
+    float dis = (imaginary_start_0 - imaginary_start) / 90;
+    float die = (imaginary_end_0 - imaginary_end) / 90;
 
     // Upload the code to VU0 first.
     Playstation2.vu0UploadCode(MandelbrotsVU0.code);
@@ -252,6 +250,10 @@ public class Mandelbrots
       posz -= 35.0f;
     }
 
+    int chunk = 8;
+    int m = 1;
+
+    // Generate Mandelbrots while animating other things.
     for (n = 0; n < 60 * 5; n++)
     {
       // Wait until the video beam is done drawing the last frame.
@@ -260,6 +262,20 @@ public class Mandelbrots
       // Clear the entire context of where this is going to draw.
       Playstation2.showContext(n + 1);
       Playstation2.clearContext(n);
+
+      if (chunk == 8)
+      {
+        chunk = 0;
+        //m = (m + 1) & 1;
+        m = m ^ 1;
+
+        real_start += drs;
+        real_end += dre;
+        imaginary_start += dis;
+        imaginary_end += die;
+        r_step = (real_end - real_start) / 64;
+        i_step = (imaginary_end - imaginary_start) / 64;
+      }
 
       if (n > 60)
       {
@@ -275,17 +291,11 @@ public class Mandelbrots
 
         if (n > 120)
         {
-          real_start += drs;
-          real_end += dre;
-          imaginary_start += dis;
-          imaginary_end += die;
-          r_step = (real_end - real_start) / 64;
-          i_step = (imaginary_end - imaginary_start) / 64;
-
-          for (y = 0; y < 8; y++)
+          for (y = 0; y < 4; y++)
           {
-            renderMandelbrot(y, real_start, r_step, imaginary_start, i_step);
-            downloadMandelbrot(y, texture_mandelbrot[0]);
+          renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
+          downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+          chunk++;
           }
 
           two_vector.rotateY512(-(n - 120) * 8);
@@ -293,15 +303,29 @@ public class Mandelbrots
         }
       }
 
-      texture_mandelbrot[0].upload();
+      texture_mandelbrot[m].upload();
 
       mandelbrot.setContext(n);
       mandelbrot.draw();
+
+      if (n > 120)
+      {
+        //renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
+        //downloadMandelbrot(chunk, texture_mandelbrot[(m + 1) & 1]);
+        //chunk++;
+      }
 
       texture_two_vector.upload();
 
       two_vector.setContext(n);
       two_vector.draw();
+
+      if (n > 120)
+      {
+        //renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
+        //downloadMandelbrot(chunk, texture_mandelbrot[(m + 1) & 1]);
+        //chunk++;
+      }
 
       texture_one_mips.upload();
 
