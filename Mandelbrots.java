@@ -291,12 +291,7 @@ public class Mandelbrots
 
         if (n > 120)
         {
-          for (y = 0; y < 4; y++)
-          {
           renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
-          downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
-          chunk++;
-          }
 
           two_vector.rotateY512(-(n - 120) * 8);
           one_mips.rotateY512((n - 120) * 8);
@@ -310,9 +305,9 @@ public class Mandelbrots
 
       if (n > 120)
       {
-        //renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
-        //downloadMandelbrot(chunk, texture_mandelbrot[(m + 1) & 1]);
-        //chunk++;
+        downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+        chunk++;
+        renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
       }
 
       texture_two_vector.upload();
@@ -322,15 +317,24 @@ public class Mandelbrots
 
       if (n > 120)
       {
-        //renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
-        //downloadMandelbrot(chunk, texture_mandelbrot[(m + 1) & 1]);
-        //chunk++;
+        downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+        chunk++;
+        renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
       }
 
       texture_one_mips.upload();
 
       one_mips.setContext(n);
       one_mips.draw();
+
+      if (n > 120)
+      {
+        downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+        chunk++;
+        renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
+        downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+        chunk++;
+      }
     }
   }
 }

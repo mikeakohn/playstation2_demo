@@ -7,9 +7,9 @@ public class Playstation2Demo
     Playstation2.clearContext(0);
     Playstation2.clearContext(1);
 
-    BillionDevices.run();
-    Logos.run();
-    Stars.run();
+    //BillionDevices.run();
+    //Logos.run();
+    //Stars.run();
     Mandelbrots.run();
 
     Playstation2.showContext(0);
