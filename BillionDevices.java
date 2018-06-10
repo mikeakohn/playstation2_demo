@@ -1,4 +1,5 @@
 import net.mikekohn.java_grinder.Playstation2;
+import net.mikekohn.java_grinder.Memory;
 import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
 import net.mikekohn.java_grinder.Draw3D.Texture16;
 
@@ -22,8 +23,9 @@ public class BillionDevices
 
   static void run()
   {
-    Texture16 texture_billion_devices = new Texture16(128, 64);
+    Texture16 texture_billion_devices = new Texture16(256, 128);
     TriangleFanWithTexture billion_devices = new TriangleFanWithTexture(4);
+    byte[] image = Memory.preloadByteArray("assets/java_3_billion_4.trle16");
     int i;
 
     for (i = 0; i < 4; i++)
@@ -31,7 +33,7 @@ public class BillionDevices
       billion_devices.setPointColor(i, 0x80808080);
     }
 
-    texture_billion_devices.setPixelsRLE16(0, ImageBillionDevices.image);
+    texture_billion_devices.setPixelsRLE16(0, image);
 
     billion_devices.setPoints(points);
     billion_devices.setTextureCoords(texture_coords);

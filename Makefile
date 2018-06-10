@@ -3,7 +3,6 @@ JAVA_GRINDER=../java_grinder/java_grinder
 NAKEN_ASM=../naken_asm/naken_asm
 CLASSES= \
   BillionDevices.class \
-  ImageBillionDevices.class \
   ImageLogoJava.class \
   ImageLogoJavaGrinder.class \
   ImageLogoNakenAsm.class \
