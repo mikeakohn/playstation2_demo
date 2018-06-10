@@ -9,29 +9,29 @@ public class Mandelbrots
   static short[] colors =
   {
     0x0000,  // 0
-    0x1c00,  // 1
-    0x3c00,  // 2
-    0x7c00,  // 3
-    0x00e0,  // 4
-    0x01e0,  // 5
-    0x03e0,  // 6
-    0x07e0,  // 7
-    0x03e0,  // 8
-    0x01e3,  // 9
-    0x00e3,  // a
-    0x0067,  // b
-    0x004f,  // c
-    0x002f,  // d
+    0x0c00,  // 1
+    0x1c00,  // 2
+    0x3c00,  // 3
+    0x7c00,  // 4
+    0x0c00,  // 5
+    0x0c00,  // 6
+    0x0c01,  // 7
+    0x0401,  // 8
+    0x0403,  // 9
+    0x0033,  // a
+    0x0037,  // b
+    0x0017,  // c
+    0x001f,  // d
     0x000f,  // e
     0x001f,  // f
   };
 
   static int[] texture_colors =
   {
-    0x00ffffff,
-    0x00ffffff,
-    0x00ffffff,
-    0x00ffffff,
+    0x80ffffff,
+    0x80ffffff,
+    0x80ffffff,
+    0x80ffffff,
   };
 
   static float[] points_64 =
@@ -58,15 +58,101 @@ public class Mandelbrots
     0.0f, 0.0f,
   };
 
+  static void renderMandelbrot(int chunk, float real_start, float r_step, float imaginary_start, float i_step)
+  {
+    //float r_step = (real_end - real_start) / 64;
+    //float i_step = (imaginary_end - imaginary_start) / 64;
+    //float imaginary_add = i_step * 8;
+    float offset = i_step * (chunk * 8);
+
+    // Pass in 16 floats as paramters (described in the mandelbrot_vu0.asm
+    // file) and expect 64 * 8 pixels back.
+    float[] vu0_params = new float[16];
+
+    // Set up r_step and i_step in the VU0 params.  These values
+    // shouldn't change for a single image.  Only need to set the
+    // first value for the step, the VU0 code can copy the first
+    // value to the other 3.  r0, r1, r2, r3 shouldn't change between
+    // runs.
+    vu0_params[0] = r_step;
+    //vu0_params[1] = 0;
+    //vu0_params[2] = 0;
+    //vu0_params[3] = 0;
+    vu0_params[4] = i_step;
+    //vu0_params[5] = 0;
+    //vu0_params[6] = 0;
+    //vu0_params[7] = 0;
+    vu0_params[8] = real_start;
+    vu0_params[9] = real_start + r_step;
+    vu0_params[10] = vu0_params[9] + r_step;
+    vu0_params[11] = vu0_params[10] + r_step;
+    vu0_params[12] = imaginary_start + offset;
+    vu0_params[13] = vu0_params[12] + i_step;
+    vu0_params[14] = vu0_params[13] + i_step;
+    vu0_params[15] = vu0_params[14] + i_step;
+
+    // Upload data to draw the Mandelbrot and wait until it's done.
+    // Then download the piece of the image so it can be transferred
+    // to VU1 to be drawn as a texture.
+    Playstation2.vu0UploadData(0, vu0_params);
+    Playstation2.vu0Start();
+
+    //vu0_params[12] += imaginary_add;
+    //vu0_params[13] += imaginary_add;
+    //vu0_params[14] += imaginary_add;
+    //vu0_params[15] += imaginary_add;
+  }
+
+  static void downloadMandelbrot(int chunk, Texture16 texture)
+  {
+    int[] vu0_data = new int[64 * 8];
+    int ptr = chunk * (64 * 8);
+
+    // Wait until chunk is finished rendering.
+    while(Playstation2.vu0IsRunning()) { }
+
+    // Download data from VU0 to main memory.
+    Playstation2.vu0DownloadData(0, vu0_data);
+
+    for (int n = 0; n < vu0_data.length; n++)
+    {
+      // FIXME: To Deal with issues in VU0.  Remove later.
+      int data = vu0_data[n];
+
+      if (data > 127 || data < 0) { data = 127; }
+      texture.setPixel(ptr, colors[data >> 3]);
+      ptr++;
+    }
+  }
+
   static void run()
   {
+    float real_start, real_end;
+    float imaginary_start, imaginary_end;
+    float i_step, r_step;
+
+    final float real_start_0 = 0.37f - 0.00f;
+    final float real_end_0 = 0.37f + 0.04f;
+    final float imaginary_start_0 = -0.2166f - 0.02f;
+    final float imaginary_end_0 = -0.2166f + 0.02f;
+
     TriangleFanWithTexture mandelbrot = new TriangleFanWithTexture(4);
     TriangleFanWithTexture two_vector = new TriangleFanWithTexture(4);
     TriangleFanWithTexture one_mips = new TriangleFanWithTexture(4);
 
-    Texture16 texture_mandelbrot = new Texture16(64, 64);
+    Texture16[] texture_mandelbrot = new Texture16[2];
+    texture_mandelbrot[0] = new Texture16(64, 64);
+    texture_mandelbrot[1] = new Texture16(64, 64);
     Texture16 texture_two_vector = new Texture16(128, 64);
     Texture16 texture_one_mips = new Texture16(128, 64);
+
+    texture_two_vector.enableTransparencyOnBlack();
+    texture_one_mips.enableTransparencyOnBlack();
+
+    two_vector.enableAlphaBlending();
+    one_mips.enableAlphaBlending();
+
+    int m = 0;
 
     byte[] image_two_vector = Memory.preloadByteArray("assets/two_vector.trle16");
     byte[] image_one_mips = Memory.preloadByteArray("assets/one_mips.trle16");
@@ -86,80 +172,29 @@ public class Mandelbrots
     one_mips.setPoints(points_128_64);
     one_mips.setTextureCoords(texture_coords);
 
-    // Pass in 16 floats as paramters (described in the mandelbrot_vu0.asm
-    // file) and expect 64 * 8 pixels back.
-    float[] vu0_params = new float[16];
-    int[] vu0_data = new int[64 * 8];
-
     // Starting values
-    float real_start = -2.00f;
-    float real_end = 1.00f;
-    float imaginary_start = -1.00f;
-    float imaginary_end = 1.00f;
+    real_start = -2.00f;
+    real_end = 1.00f;
+    imaginary_start = -1.00f;
+    imaginary_end = 1.00f;
+    r_step = (real_end - real_start) / 64;
+    i_step = (imaginary_end - imaginary_start) / 64;
+
+    float drs = (real_start_0 - real_start) / 180;
+    float dre = (real_end_0 - real_end) / 180;
+    float dis = (imaginary_start_0 - imaginary_start) / 180;
+    float die = (imaginary_end_0 - imaginary_end) / 180;
 
     // Upload the code to VU0 first.
     Playstation2.vu0UploadCode(MandelbrotsVU0.code);
 
-    float r_step = (real_end - real_start) / 64;
-    float i_step = (imaginary_end - imaginary_start) / 64;
-
-    float imaginary_add = i_step * 8;
-    int y, n, ptr;
+    int y, n;
     float posx, posz;
-
-    // DEBUG DEBUG DEBUG
-    //for (n = 0; n < vu0_data.length; n++) { vu0_data[n] = 127; }
-    //Playstation2.vu0UploadData(0, vu0_data);
-    // DEBUG DEBUG DEBUG
-
-    // Set up r_step and i_step in the VU0 params.  These values
-    // shouldn't change for a single image.  Only need to set the
-    // first value for the step, the VU0 code can copy the first
-    // value to the other 3.  r0, r1, r2, r3 shouldn't change between
-    // runs.
-    vu0_params[0] = r_step;
-    //vu0_params[1] = 0;
-    //vu0_params[2] = 0;
-    //vu0_params[3] = 0;
-    vu0_params[4] = i_step;
-    //vu0_params[5] = 0;
-    //vu0_params[6] = 0;
-    //vu0_params[7] = 0;
-    vu0_params[8] = real_start;
-    vu0_params[9] = real_start + r_step;
-    vu0_params[10] = vu0_params[9] + r_step;
-    vu0_params[11] = vu0_params[10] + r_step;
-    vu0_params[12] = imaginary_start;
-    vu0_params[13] = imaginary_start + i_step;
-    vu0_params[14] = vu0_params[13] + i_step;
-    vu0_params[15] = vu0_params[14] + i_step;
-
-    ptr = 0;
 
     for (y = 0; y < 8; y++)
     {
-      // Upload data to draw the Mandelbrot and wait until it's done.
-      // Then download the piece of the image so it can be transferred
-      // to VU1 to be drawn as a texture.
-      Playstation2.vu0UploadData(0, vu0_params);
-      Playstation2.vu0Start();
-      while(Playstation2.vu0IsRunning()) { }
-      Playstation2.vu0DownloadData(0, vu0_data);
-
-      for (n = 0; n < vu0_data.length; n++)
-      {
-        // FIXME: To Deal with issues in VU0.  Remove later.
-        int data = vu0_data[n];
-
-        if (data > 127 || data < 0) { data = 127; }
-        texture_mandelbrot.setPixel(ptr, colors[data >> 3]);
-        ptr++;
-      }
-
-      vu0_params[12] += imaginary_add;
-      vu0_params[13] += imaginary_add;
-      vu0_params[14] += imaginary_add;
-      vu0_params[15] += imaginary_add;
+      renderMandelbrot(y, real_start, r_step, imaginary_start, i_step);
+      downloadMandelbrot(y, texture_mandelbrot[0]);
     }
 
     posx = 1000.0f;
@@ -217,7 +252,7 @@ public class Mandelbrots
       posz -= 35.0f;
     }
 
-    for (n = 0; n < 61 * 3; n++)
+    for (n = 0; n < 60 * 5; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
@@ -226,7 +261,39 @@ public class Mandelbrots
       Playstation2.showContext(n + 1);
       Playstation2.clearContext(n);
 
-      texture_mandelbrot.upload();
+      if (n > 60)
+      {
+        if (n < 120)
+        {
+          mandelbrot.rotateX512((n - 60) * 8);
+        }
+          else
+        {
+          mandelbrot.rotateX512(0);
+          mandelbrot.rotateZ512((n - 60) * 8);
+        }
+
+        if (n > 120)
+        {
+          real_start += drs;
+          real_end += dre;
+          imaginary_start += dis;
+          imaginary_end += die;
+          r_step = (real_end - real_start) / 64;
+          i_step = (imaginary_end - imaginary_start) / 64;
+
+          for (y = 0; y < 8; y++)
+          {
+            renderMandelbrot(y, real_start, r_step, imaginary_start, i_step);
+            downloadMandelbrot(y, texture_mandelbrot[0]);
+          }
+
+          two_vector.rotateY512(-(n - 120) * 8);
+          one_mips.rotateY512((n - 120) * 8);
+        }
+      }
+
+      texture_mandelbrot[0].upload();
 
       mandelbrot.setContext(n);
       mandelbrot.draw();
