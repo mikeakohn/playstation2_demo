@@ -336,6 +336,74 @@ public class Mandelbrots
         chunk++;
       }
     }
+
+    int start = n;
+    int count = 0;
+    int rotate_x = 0;
+    float z = 1148.0f;
+
+    // Show just the Mandelbrot.
+    for (n = start; n < 60 * 10; n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      Playstation2.waitVsync();
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.showContext(n + 1);
+      Playstation2.clearContext(n);
+      mandelbrot.rotateZ512((n - 60) * 8);
+
+      if (n < 60 * 6)
+      {
+        rotate_x += 10;
+        z = z - 10.0f;
+
+        mandelbrot.rotateX512(rotate_x);
+        mandelbrot.setPosition(1320.f, 1240.0f, z);
+      }
+
+      if (n > 60 * 9)
+      {
+        z = z + 60.0f;
+        mandelbrot.setPosition(1320.f, 1240.0f, z);
+      }
+
+      if (chunk == 8)
+      {
+        chunk = 0;
+        //m = (m + 1) & 1;
+        m = m ^ 1;
+
+        real_start += drs;
+        real_end += dre;
+        imaginary_start += dis;
+        imaginary_end += die;
+        r_step = (real_end - real_start) / 64;
+        i_step = (imaginary_end - imaginary_start) / 64;
+
+        if ((count & 127) == 0)
+        {
+          drs = -drs;
+          dre = -dre;
+          dis = -dis;
+          die = -die;
+        }
+
+        count++;
+      }
+
+      texture_mandelbrot[m].upload();
+
+      mandelbrot.setContext(n);
+      mandelbrot.draw();
+
+      for (y = 0; y < 4; y++)
+      {
+        renderMandelbrot(chunk, real_start, r_step, imaginary_start, i_step);
+        downloadMandelbrot(chunk, texture_mandelbrot[m ^ 1]);
+        chunk++;
+      }
+    }
   }
 }
 
