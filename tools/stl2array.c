@@ -5,9 +5,9 @@
 struct _triangle
 {
   float normal[3];
-  float vertex_1[0];
-  float vertex_2[0];
-  float vertex_3[0];
+  float vertex_1[3];
+  float vertex_2[3];
+  float vertex_3[3];
   uint16_t attributes;
 };
 
@@ -93,7 +93,15 @@ static int read_triangle(FILE *fp, struct _triangle *triangle, float scale)
 
 static int print_vector(float *vector)
 {
-   printf("    { %0.3f, %0.3f, %0.3f },\n",
+   printf("  { %0.3f, %0.3f, %0.3f },\n",
+     vector[0], vector[1], vector[2]);
+
+  return 0;
+}
+
+static int print_vector_as_code(float *vector)
+{
+   printf("    %0.3ff, %0.3ff, %0.3ff,\n",
      vector[0], vector[1], vector[2]);
 
   return 0;
@@ -116,9 +124,9 @@ static int print_triangles(struct _triangle *triangle)
 
 static int print_triangles_as_code(struct _triangle *triangle)
 {
-  print_vector(triangle->vertex_1);
-  print_vector(triangle->vertex_2);
-  print_vector(triangle->vertex_3);
+  print_vector_as_code(triangle->vertex_1);
+  print_vector_as_code(triangle->vertex_2);
+  print_vector_as_code(triangle->vertex_3);
 
   return 0;
 }
@@ -128,7 +136,6 @@ int main(int argc, char *argv[])
   FILE *fp;
   uint32_t triangles;
   uint32_t n;
-  struct _triangle triangle;
   float scale = 1.0f;
 
   if (argc != 2 && argc != 3)
@@ -156,14 +163,16 @@ int main(int argc, char *argv[])
 
     triangles = read_uint32(fp);
 
+    struct _triangle triangle[triangles];
+
     printf("Triangles: %d\n", triangles);
 
     for (n = 0; n < triangles; n++)
     {
       printf("-- Triangle %d --\n", n);
-      if (read_triangle(fp, &triangle, scale) != 0) { break; }
+      if (read_triangle(fp, &triangle[n], scale) != 0) { break; }
 
-      print_triangles(&triangle);
+      print_triangles(&triangle[n]);
     }
 
     printf("  static float[] object_points =\n");
@@ -171,7 +180,7 @@ int main(int argc, char *argv[])
 
     for (n = 0; n < triangles; n++)
     {
-      print_triangles_as_code(&triangle);
+      print_triangles_as_code(&triangle[n]);
     }
 
     printf("  };\n");
