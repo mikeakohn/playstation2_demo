@@ -90,7 +90,7 @@ public class Cubes
     Playstation2.showContext(0);
 
     // Single cube rotating
-    for (n = 0; n < 60 * 3; n++)
+    for (n = 0; n < (60 * 3) + 30; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
@@ -108,7 +108,7 @@ public class Cubes
     }
 
     // Single cube rotating
-    for (n = 0; n < 60 * 3; n++)
+    for (n = 0; n < (60 * 3) + 30; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
