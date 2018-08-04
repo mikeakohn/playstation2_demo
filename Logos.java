@@ -155,7 +155,7 @@ public class Logos
       dy += 0.08f;
     }
 
-    Playstation2.clearContext(0);
+    Playstation2.clearContext(1);
   }
 }
 

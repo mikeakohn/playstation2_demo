@@ -1,0 +1,28 @@
+include "/storage/programs/drumsplusplus/samples/drum_defines.inc"
+
+set bpm=100;
+set defaultvolume=127;
+set timesignature=4/4;
+
+pattern blank
+{
+  closed_hihat: 1;
+}
+
+pattern click_track
+{
+  closed_hihat: 1 2 3 4;
+}
+
+pattern main
+{
+  bassdrum: 1 1.75 2.5 3.5 4.5;
+  snare: 2 4;
+  splash_cymbal: 1;
+}
+
+song test_song
+{
+  play: blank, click_track, 10 main;
+}
+

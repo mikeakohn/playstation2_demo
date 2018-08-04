@@ -1,0 +1,72 @@
+include "/storage/programs/drumsplusplus/samples/drum_defines.inc"
+
+set bpm=100;
+set defaultvolume=127;
+set timesignature=4/4;
+
+pattern blank
+{
+  closed_hihat: 1;
+}
+
+pattern click_track
+{
+  closed_hihat: 1 2 3 4;
+}
+
+pattern intro
+{
+  closed_hihat: 1 2 3;
+  open_hihat: 4;
+  bassdrum: 1 1.5 2.5 3 3.5;
+}
+
+pattern pattern_main_1
+{
+  closed_hihat: 1 2 3 4;
+  //bassdrum: 1 1.75 2.75 3;
+  //snare: 2 4;
+  bassdrum: 1 3 4.5;
+  snare: 2 2.5 4;
+  splash_cymbal: 1;
+}
+
+pattern pattern_main_2
+{
+  closed_hihat: 1 2 3 4;
+  bassdrum: 3;
+  snare: 2 2.5 4 4.5;
+  splash_cymbal: 1;
+}
+
+pattern pattern_main_3
+{
+  closed_hihat: 1 2 3 4;
+  bassdrum: 1 3.5;
+  snare: 2 2.5 4;
+  splash_cymbal: 1;
+}
+
+pattern end
+{
+  snare: 1;
+  splash_cymbal: 1;
+}
+
+section main
+{
+  play: pattern_main_1,
+        pattern_main_2,
+        pattern_main_1,
+        pattern_main_2,
+        pattern_main_1,
+        pattern_main_2,
+        pattern_main_3,
+        pattern_main_3;
+}
+
+song test_song
+{
+  play: blank, click_track, 4 intro, 2 main, end;
+}
+
