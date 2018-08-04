@@ -1,3 +1,4 @@
+import net.mikekohn.java_grinder.Math;
 import net.mikekohn.java_grinder.Playstation2;
 import net.mikekohn.java_grinder.Draw3D.Triangle;
 
@@ -107,8 +108,13 @@ public class Cubes
       cube.rotateY512(n << 2);
     }
 
-    // Single cube rotating
-    for (n = 0; n < (60 * 3) + 30; n++)
+    float ft = 0;
+    int t = 0;
+    int dt = 12;
+    float x, y;
+
+    // Four cubes rotating
+    for (n = 0; n < (60 * 5) + 10; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
@@ -118,25 +124,45 @@ public class Cubes
       Playstation2.clearContext(n);
       cube.setContext(n);
 
+      t = (int)ft;
+
+      x = 120 * Math.cos512(t);
+      y = 120 * Math.sin512(t);
+
       cube.rotateX512(n << 4);
       cube.rotateY512(n << 2);
-      cube.setPosition(1200.0f, 1100.0f, 2048.0f);
+      //cube.setPosition(1200.0f, 1100.0f, 2048.0f);
+      cube.setPosition(1300.0f + x, 1200.0f + y, 2048.0f);
       cube.draw();
+
+      x = 120 * Math.cos512(t + 128);
+      y = 120 * Math.sin512(t + 128);
 
       cube.rotateX512(n << 2);
       cube.rotateY512(n << 4);
-      cube.setPosition(1400.0f, 1100.0f, 2048.0f);
+      //cube.setPosition(1400.0f, 1100.0f, 2048.0f);
+      cube.setPosition(1300.0f + x, 1200.0f + y, 2048.0f);
       cube.draw();
+
+      x = 120 * Math.cos512(t + 256);
+      y = 120 * Math.sin512(t + 256);
 
       cube.rotateZ512(n << 2);
       cube.rotateY512(n << 4);
-      cube.setPosition(1200.0f, 1300.0f, 2048.0f);
+      //cube.setPosition(1200.0f, 1300.0f, 2048.0f);
+      cube.setPosition(1300.0f + x, 1200.0f + y, 2048.0f);
       cube.draw();
+
+      x = 120 * Math.cos512(t + 384);
+      y = 120 * Math.sin512(t + 384);
 
       cube.rotateZ512(n << 4);
       cube.rotateX512(n << 2);
-      cube.setPosition(1400.0f, 1300.0f, 2048.0f);
+      //cube.setPosition(1400.0f, 1300.0f, 2048.0f);
+      cube.setPosition(1300.0f + x, 1200.0f + y, 2048.0f);
       cube.draw();
+
+      ft = ft + (5.0f * Math.cos512(n << 2));
     }
 
     Playstation2.clearContext(0);
