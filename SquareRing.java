@@ -128,6 +128,90 @@ public class SquareRing
       z = z + 6.6f;
     }
 
+    int pyramid_rotation = 0;
+
+    // Single squares rotating with pyramid rotating around ring.
+    for (n = 0; n < (60 * 35); n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.clearContext(n);
+
+      square.rotateX512(rotation << 4);
+      square.rotateY512(rotation << 2);
+      pyramid.rotateY512(rotation << 1);
+      pyramid.rotateZ512(rotation << 2);
+      rotation++;
+
+      square.setContext(n);
+      drawRing(square, 160, 20, 0x00ff0000,   0.0f,  ring_rotation);
+      drawRing(square, 140, 32, 0x000000ff,  40.0f, -ring_rotation);
+      drawRing(square, 120, 51, 0x0000ff00,  80.0f,  ring_rotation);
+      drawRing(square, 100, 64, 0x00ff00ff, 120.0f, -ring_rotation);
+      ring_rotation++;
+
+      pyramid.setContext(n);
+
+      x = 120 * Math.cos512(pyramid_rotation);
+      z = 120 * Math.sin512(pyramid_rotation);
+
+      pyramid.setPosition(1195.0f + x, 1224.0f, 2048.0f + z);
+      pyramid.draw();
+
+      if (n > 60 * 10)
+      {
+        pyramid.setPosition(1320.0f, 1224.0f + x, 2048.0f + z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 15)
+      {
+        pyramid.setPosition(1320.0f, 1224.0f - x, 2048.0f + z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 17)
+      {
+        pyramid.setPosition(1195.0f - x, 1224.0f, 2048.0f - z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 20)
+      {
+        pyramid.setPosition(1195.0f - x, 1224.0f + x, 2048.0f - z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 23)
+      {
+        pyramid.setPosition(1195.0f - x, 1224.0f + x, 2048.0f + z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 26)
+      {
+        pyramid.setPosition(1195.0f - x, 1224.0f - x, 2048.0f + z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 29)
+      {
+        pyramid.setPosition(1195.0f + x, 1224.0f - z, 2048.0f + z);
+        pyramid.draw();
+      }
+
+      if (n > 60 * 29)
+      {
+        pyramid.setPosition(1195.0f + x, 1224.0f - z, 2048.0f);
+        pyramid.draw();
+      }
+
+      pyramid_rotation += 4;
+    }
+
     Playstation2.clearContext(0);
   }
 }
