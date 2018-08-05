@@ -11,6 +11,7 @@ CLASSES= \
   Logos.class \
   Mandelbrots.class \
   MandelbrotsVU0.class \
+  ObjectPyramid.class \
   Playstation2Demo.class \
   SquareRing.class \
   Stars.class

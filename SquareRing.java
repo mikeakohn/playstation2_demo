@@ -1,5 +1,6 @@
 import net.mikekohn.java_grinder.Math;
 import net.mikekohn.java_grinder.Playstation2;
+import net.mikekohn.java_grinder.Draw3D.Triangle;
 import net.mikekohn.java_grinder.Draw3D.TriangleFan;
 
 public class SquareRing
@@ -36,7 +37,7 @@ public class SquareRing
       x = radius * Math.cos512(n + rotation);
       y = radius * Math.sin512(n + rotation);
 
-      square.setPosition(1320.0f + x, 1200.0f + y, 2048.0f + depth);
+      square.setPosition(1320.0f + x, 1224.0f + y, 2048.0f + depth);
       square.draw();
     }
   }
@@ -44,23 +45,25 @@ public class SquareRing
   static void run()
   {
     TriangleFan square = new TriangleFan(4);
+    Triangle pyramid = new Triangle(ObjectPyramid.points.length / 3);
 
-    int n, i;
+    pyramid.setPoints(ObjectPyramid.points);
+    pyramid.setPointColors(ObjectPyramid.colors);
+    //pyramid.disableGouraudShading();
 
-    for (n = 0; n < 4; n++)
-    {
-      square.setPointColor(n, colors[n]);
-    }
+    int n, i, rotation, ring_rotation;
+    float x, y, z;
 
     square.setPoints(points);
-    //square.setPosition(1320.0f, 1200.0f, 2048.0f);
-    square.setPosition(1320.0f, 1200.0f, 2048.0f);
+    square.setPosition(1320.0f, 1224.0f, 2048.0f);
     square.setContext(0);
 
     Playstation2.showContext(0);
 
-    // Single square rotating
-    for (n = 0; n < (60 * 10); n++)
+    rotation = 0;
+
+    // Single squares rotating
+    for (n = 0; n < (60 * 8) + 30; n++)
     {
       // Wait until the video beam is done drawing the last frame.
       Playstation2.waitVsync();
@@ -69,14 +72,60 @@ public class SquareRing
       // Clear the entire context of where this is going to draw.
       Playstation2.clearContext(n);
 
+      square.rotateX512(rotation << 4);
+      square.rotateY512(rotation << 2);
+      rotation++;
+
       square.setContext(n);
       drawRing(square, 160, 20, 0x00ff0000,   0.0f, 0);
-      if (n > 60 * 2) { drawRing(square, 140, 32, 0x000000ff,  40.0f, 0); }
-      if (n > 60 * 5) { drawRing(square, 120, 51, 0x0000ff00,  80.0f, 0); }
-      if (n > 60 * 7) { drawRing(square, 100, 64, 0x00ff00ff, 120.0f, 0); }
 
-      square.rotateX512(n << 4);
-      square.rotateY512(n << 2);
+      if (n > (60 * 2) + 00)
+      {
+        drawRing(square, 140, 32, 0x000000ff,  40.0f, 0);
+      }
+
+      if (n > (60 * 4) + 20)
+      {
+        drawRing(square, 120, 51, 0x0000ff00,  80.0f, 0);
+      }
+
+      if (n > (60 * 6) + 40)
+      {
+        drawRing(square, 100, 64, 0x00ff00ff, 120.0f, 0);
+      }
+    }
+
+    x = 0; y = 0; z = -2000;
+    ring_rotation = 0;
+
+    // Single squares rotating with pyramid sliding in.
+    for (n = 0; n < (60 * 5); n++)
+    {
+      // Wait until the video beam is done drawing the last frame.
+      Playstation2.waitVsync();
+      Playstation2.showContext(n + 1);
+
+      // Clear the entire context of where this is going to draw.
+      Playstation2.clearContext(n);
+
+      square.rotateX512(rotation << 4);
+      square.rotateY512(rotation << 2);
+      pyramid.rotateY512(rotation << 1);
+      pyramid.rotateZ512(rotation << 2);
+      rotation++;
+
+      square.setContext(n);
+      drawRing(square, 160, 20, 0x00ff0000,   0.0f,  ring_rotation);
+      drawRing(square, 140, 32, 0x000000ff,  40.0f, -ring_rotation);
+      drawRing(square, 120, 51, 0x0000ff00,  80.0f,  ring_rotation);
+      drawRing(square, 100, 64, 0x00ff00ff, 120.0f, -ring_rotation);
+      ring_rotation++;
+
+      pyramid.setContext(n);
+      pyramid.setPosition(1320.0f, 1224.0f, 2048.0f + z);
+      pyramid.draw();
+
+      z = z + 6.6f;
     }
 
     Playstation2.clearContext(0);
