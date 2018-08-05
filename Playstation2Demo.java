@@ -36,6 +36,8 @@ public class Playstation2Demo
 
     SquareRing.run();
 
+    Credits.run();
+
     Playstation2.showContext(0);
 
     while(true)
