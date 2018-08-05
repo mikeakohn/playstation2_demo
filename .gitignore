@@ -4,3 +4,4 @@ playstation2_demo.asm
 *.elf
 bin2array
 bmp2texture
+stl2array
