@@ -12,6 +12,7 @@ CLASSES= \
   Mandelbrots.class \
   MandelbrotsVU0.class \
   Playstation2Demo.class \
+  SquareRing.class \
   Stars.class
 
 default: $(CLASSES)
