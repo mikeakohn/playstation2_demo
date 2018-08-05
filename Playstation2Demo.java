@@ -5,7 +5,9 @@ public class Playstation2Demo
 {
   static public void main(String args[])
   {
+    int n;
     byte[] song_shoebox = Memory.preloadByteArray("assets/song_shoebox.adpcm");
+    byte[] song_fretless = Memory.preloadByteArray("assets/song_fretless.adpcm");
 
     Playstation2.clearContext(0);
     Playstation2.clearContext(1);
@@ -23,6 +25,12 @@ public class Playstation2Demo
     Stars.run();
     Mandelbrots.run();
     Cubes.run();
+
+    for (n = 0; n < 60; n++) { Playstation2.waitVsync(); }
+
+    Playstation2.spuKeyOff(0);
+    Playstation2.spuUploadSoundData(song_fretless);
+    Playstation2.spuKeyOn(0);
 
     Playstation2.showContext(0);
 
