@@ -32,6 +32,10 @@ public class Playstation2Demo
     Playstation2.spuUploadSoundData(song_fretless);
     Playstation2.spuKeyOn(0);
 
+    for (n = 0; n < 40; n++) { Playstation2.waitVsync(); }
+
+    SquareRing.run();
+
     Playstation2.showContext(0);
 
     while(true)
