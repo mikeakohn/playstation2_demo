@@ -10,7 +10,7 @@ to open a new repository for the demo.  Previously we've been
 putting the demos in the samples directory of Java Grinder but
 I since this one might have some bigger assets I wanted a
 separate repository for it.  There is still a small sample
-program with Java grinder, but it's more for showing examples
+program with Java Grinder, but it's more for showing examples
 of how to use the API.
 
 If the documentation in this README doesn't make sense, please
