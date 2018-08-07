@@ -1,4 +1,4 @@
-include "/storage/programs/drumsplusplus/samples/drum_defines.inc"
+include "../drumsplusplus/samples/drum_defines.inc"
 
 set bpm=100;
 set defaultvolume=127;

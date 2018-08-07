@@ -1,4 +1,4 @@
-include "/storage/programs/drumsplusplus/samples/drum_defines.inc"
+include "../drumsplusplus/samples/drum_defines.inc"
 
 set bpm=100;
 set defaultvolume=127;
@@ -24,8 +24,6 @@ pattern intro
 pattern pattern_main_1
 {
   closed_hihat: 1 2 3 4;
-  //bassdrum: 1 1.75 2.75 3;
-  //snare: 2 4;
   bassdrum: 1 3 4.5;
   snare: 2 2.5 4;
   splash_cymbal: 1;
