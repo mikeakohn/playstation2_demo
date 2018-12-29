@@ -1,4 +1,4 @@
-import net.mikekohn.java_grinder.Draw3D.Triangle;
+import net.mikekohn.java_grinder.draw3d.Triangle;
 
 public class ObjectPyramid
 {

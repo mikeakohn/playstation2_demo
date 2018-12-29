@@ -1,6 +1,6 @@
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.TriangleFanWithTexture;
-import net.mikekohn.java_grinder.Draw3D.Texture16;
+import net.mikekohn.java_grinder.draw3d.TriangleFanWithTexture;
+import net.mikekohn.java_grinder.draw3d.Texture16;
 
 public class Logos
 {

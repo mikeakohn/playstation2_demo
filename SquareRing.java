@@ -1,7 +1,7 @@
 import net.mikekohn.java_grinder.Math;
 import net.mikekohn.java_grinder.Playstation2;
-import net.mikekohn.java_grinder.Draw3D.Triangle;
-import net.mikekohn.java_grinder.Draw3D.TriangleFan;
+import net.mikekohn.java_grinder.draw3d.Triangle;
+import net.mikekohn.java_grinder.draw3d.TriangleFan;
 
 public class SquareRing
 {
